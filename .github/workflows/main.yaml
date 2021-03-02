@@ -41,9 +41,9 @@ jobs:
         run: |
           sudo apt install -y ssh
           mkdir -p ~/.ssh/
-          'echo "${{secrets.SSH_KEY}}" > ~/.ssh/overdue_rsa'
+          echo "${{secrets.SSH_KEY}}" > ~/.ssh/overdue_rsa
           chmod 600 ~/.ssh/overdue_rsa
-          'ssh-keyscan "${{secrets.SSH_HOST}}" >> ~/.ssh/known_hosts'
+          ssh-keyscan "${{secrets.SSH_HOST}}" >> ~/.ssh/known_hosts
       # We hardcode the calls to the absolute paths of the executable binaries here since SSH is a non-interactive shell (different $PATH environment variables)
       # Read these for more information:
       # - https://stackoverflow.com/a/216204
