@@ -1,0 +1,69 @@
+name: Build, Run Tests & Deploy
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        # This will assign a random free host port
+        ports:
+          - 5432:5432
+        # This is needed because the Postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+    - name: Checkout Sources
+      uses: actions/checkout@v2
+    - name: Install Stable Rust Toolchain
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+    - name: Run tests
+      run: |
+        sudo apt update
+        sudo apt install -y build-essential
+        mv .env.test .env && cargo test --all-features --verbose
+      env:
+        RUST_LOG: actix_web=info,actix_server=info
+        RUST_BACKTRACE: FULL
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build_and_test
+    steps:
+      - name: Setup & Configure SSH
+        run: |
+          sudo apt install -y ssh
+          mkdir -p ~/.ssh/
+          'echo "${{secrets.SSH_KEY}}" > ~/.ssh/overdue_rsa'
+          chmod 600 ~/.ssh/overdue_rsa
+          'ssh-keyscan "${{secrets.SSH_HOST}}" >> ~/.ssh/known_hosts'
+      # We hardcode the calls to the absolute paths of the executable binaries here since SSH is a non-interactive shell (different $PATH environment variables)
+      # Read these for more information:
+      # - https://stackoverflow.com/a/216204
+      # - https://unix.stackexchange.com/a/332533
+      - name: Deploy Overdue Backend Server
+        run: |
+          ssh -i ~/.ssh/overdue_rsa -o UserKnownHostsFile=~/.ssh/known_hosts ${{secrets.SSH_USERNAME}}@${{secrets.SSH_HOST}} '
+            sudo systemctl stop overdue_backend.service;
+            sudo dpkg --purge overdue_backend;
+            cd overdue_backend && git fetch --all && git reset --hard origin/main && git clean -f -d && git pull origin main;
+            sudo rm -rf target;
+            echo "${{secrets.TLS_FULLCHAIN_CERTIFICATE}}" > tls/fullchain.pem;
+            echo "${{secrets.TLS_PRIVATE_KEY}}" > tls/privkey.pem;
+            export TARGET_TRIPLE=$(/root/.cargo/bin/rustc -vV | grep host | cut -d: -f2 | tr -d " ");
+            /root/.cargo/bin/cargo deb --target=$TARGET_TRIPLE;
+            sudo dpkg -i target/$TARGET_TRIPLE/debian/overdue_backend_0.1.0_amd64.deb;
+            sudo systemctl start overdue_backend.service;
+          '
+      - name: Delete & Cleanup SSH Credentials
+        run: |
+          sudo rm -rf ~/.ssh/overdue_rsa
+          sudo rm -rf ~/.ssh/known_hosts
+          echo 'Continuous deployment to DigitalOcean server is successful!'

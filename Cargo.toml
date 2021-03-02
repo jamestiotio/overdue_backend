@@ -1,0 +1,82 @@
+[package]
+# We use underscores instead of hyphens since Cargo will internally replace hyphens with underscores anyway (hyphens are disallowed as Cargo only support underscore identifiers)
+name = "overdue_backend"
+description = "Backend Database Server Code of the Overdue Game."
+version = "0.1.0"
+authors = ["James Raphael Tiovalen <james_raphael@mymail.sutd.edu.sg>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/jamestiotio/overdue_backend"
+edition = "2018"
+keywords = ["backend", "server", "api", "endpoint", "endpoints", "database", "postgres", "postgresql", "sql", "actix", "actix-web", "http", "web", "app", "webapp", "async"]
+categories = ["api-bindings", "network-programming", "asynchronous", "web-programming::http-server", "database", "database-implementations", "concurrency"]
+
+[[bin]]
+name = "overdue_backend"
+path = "src/main.rs"
+
+[features]
+default = []
+
+# Integration tests
+integration = []
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+# Avoid specifying non-essential extra unused dependencies so as to avoid potential version incompatibility conflicts (multiple transitive dependencies can cause some serious grief)
+actix-web = { version = "3.3.2", features = ["openssl"] }
+actix-cors = "0.5.4"
+actix-ratelimit = "0.3.1"
+actix-files = "0.5.0"
+validator = { version = "0.12", features = ["derive"] }
+futures = "0.3"
+env_logger = "0.8"
+serde = { version = "1.0.104", features = ["derive"] }
+serde_json = "1.0"
+json = "0.12"
+tokio-pg-mapper = "0.1.4"
+tokio-pg-mapper-derive = "0.1.4"
+deadpool-postgres = "0.5.0"
+tokio-postgres = { version = "0.5.5", features = ["with-serde_json-1"] }
+postgres-types = { version = "0.1.2", features = ["derive"] }
+openssl = { version = "0.10", features = ["vendored"] }
+native-tls = "0.2.7"
+postgres-native-tls = "0.5.0"
+dotenv = "0.15.0"
+config = "0.10.1"
+thiserror = "1.0.23"
+regex = "1.4.3"
+lazy_static = "1.4.0"
+paperclip = { version = "0.5.0", features = ["actix"] }
+slog = "2.7.0"
+slog-term = "2.8.0"
+slog-async = "2.6.0"
+chrono = "0.4.19"
+
+[dev-dependencies]
+cargo-watch = "7.5.0"
+cargo-deb = "1.29.1"
+cargo-tarpaulin = "0.16.0"
+cargo-audit = "0.13.1"
+tokio-test = "0.4.0"
+
+[profile.release]
+lto = true
+opt-level = 3
+codegen-units = 2  # We use 2 instead of 1 since no LTO is performed if codegen-units is 1
+
+[package.metadata.deb]
+maintainer  = "James Raphael Tiovalen <james_raphael@mymail.sutd.edu.sg>"
+copyright = "2021, James Raphael Tiovalen"
+depends = "$auto, systemd"
+conf-files = ["/etc/systemd/system/overdue_backend.service"]
+extended-description = """\
+Backend Database Server of the Overdue Game.\
+"""
+section="httpd"
+priority="optional"
+assets= [
+    ["target/x86_64-unknown-linux-gnu/release/overdue_backend", "/usr/local/bin/", "755"],
+    ["assets/overdue_backend.service", "/etc/systemd/system/", "644"],
+]

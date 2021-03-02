@@ -1,0 +1,19 @@
+[Unit]
+Description=Backend Database Server of the Overdue Game
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/overdue_backend
+Type=exec
+Restart=on-failure
+Environment="SERVER__HOST=0.0.0.0"
+Environment="SERVER__PORT=443"
+Environment="PG__USER=overdue"
+Environment="PG__PASSWORD=overdue"
+Environment="PG__HOST=127.0.0.1"
+Environment="PG__PORT=5432"
+Environment="PG__DBNAME=overdue"
+Environment="PG__POOL__MAX_SIZE=30"
+
+[Install]
+WantedBy=default.target

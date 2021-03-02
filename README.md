@@ -2,9 +2,7 @@
 
 <p align="center"><img alt="Overdue! Logo" width="420px" src="./images/overdue-logo.png"></p>
 
-![POWERED BY: ISTD SUTDENTS](https://img.shields.io/badge/powered%20by-istd%20SUTDents-73af44?style=for-the-badge&labelColor=d7ef32)
-
-![COVERAGE: 42%](https://img.shields.io/badge/coverage-42%25-orange?style=for-the-badge)
+![POWERED BY: ISTD SUTDENTS](https://img.shields.io/badge/powered%20by-istd%20SUTDents-73af44?style=for-the-badge&labelColor=d7ef32) ![COVERAGE: 42%](https://img.shields.io/badge/coverage-42%25-orange?style=for-the-badge)
 
 Backend Database Server Code of `Overdue!` (SUTD Fablab ISTD Game) for Open House 2021.
 
