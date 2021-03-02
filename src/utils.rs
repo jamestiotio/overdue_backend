@@ -37,6 +37,16 @@ pub async fn check_if_materials_total_value_sum_up_to_score(score: i32, material
         }
     }
 
+    // Check that materials vector does not contain any duplicate items (i.e. multiple material entries with the same name)
+    // This is an attempt to avoid potential/possible race conditions
+    let mut already_seen = vec![];
+    for material in materials.iter() {
+        match already_seen.contains(&material.name) {
+            true => return Ok(false),
+            _ => already_seen.push(material.name.clone())
+        }
+    }
+
     // Prevent submission of scores with non-zero bonuses but with no materials
     if materials.is_empty() && bonus > 0 {
         return Ok(false);
@@ -185,6 +195,18 @@ mod tests {
 
         let result: bool = aw!(check_if_materials_total_value_sum_up_to_score(score, materials, bonus, values)).expect("error running score validator function");
         
+        assert_eq!(result, false);
+    }
+
+    #[test]
+    fn test_validate_duplicate_material_names() {
+        let score: i32 = 110;
+        let materials: Vec<MaterialEntry> = vec![ MaterialEntry{name: "portalGun".to_string(), quantity: 4}, MaterialEntry{name: "portalGun".to_string(), quantity: 7} ];
+        let bonus: i32 = 0;
+        let values: Vec<MaterialValueEntry> = vec![ MaterialValueEntry{name: "lovePotion".to_string(), value: 20}, MaterialValueEntry{name: "portalGun".to_string(), value: 10}, MaterialValueEntry{name: "batarang".to_string(), value: 30} ];
+
+        let result: bool = aw!(check_if_materials_total_value_sum_up_to_score(score, materials, bonus, values)).expect("error running score validator function");
+
         assert_eq!(result, false);
     }
 
