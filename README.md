@@ -10,7 +10,7 @@ Game obviously inspired by [Overcooked!](https://www.team17.com/games/overcooked
 
 Frontend code repository for the [Phaser](https://phaser.io/)-based public-facing web game client is accessible [here](https://github.com/nicolefranc/sutd-fablab-game) (might be private).
 
-While they are still up, the front-facing frontend game client can be accessed [here](https://sutd-fablab-game.netlify.app/) (the public-facing one can be seen [here](https://openhouse.sutd.edu.sg/)) and the backend game server can be accessed [here](https://sutdoverdue.dev/).
+While they are still up, the front-facing frontend game client can be accessed [here](https://sutd-fablab-game.netlify.app/) (the public-facing one can be seen either [here](https://openhouse.sutd.edu.sg/) or [here](https://overdue.sutd.edu.sg/)) and the backend game server can be accessed [here](https://sutdoverdue.dev/).
 
 For players who contributed to the game's final goal of total materials collected, they will earn this badge:
 
