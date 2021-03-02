@@ -257,13 +257,15 @@ The error handler is set up to avoid unwanted panics and the error message is pu
 
 - Avoid hardcoded path methods for files.
 
+- Add a favicon image to the `/favicon.ico` route endpoint.
+
 - Migration from DigitalOcean Droplet to AWS, GCP or Azure since they provide a better, less troublesome and more supportive environment for CI/CD (as well as for project ownership transfer process).
 
 
 
 ## Acknowledgements
 
-These are the people who made this project possible to happen:
+[Credits](./images/credits.png) and props to these people who made this project possible to happen (especially during such a busy academic school term with a literal mountain of workload, sacrificing a lot of things):
 
 - SUTD ISTD 2021 Open House Game Development Committee:
   - [Filbert Cia](https://github.com/FolkLoreee) (Project Director & Overall Coordinator)

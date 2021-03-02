@@ -26,7 +26,7 @@ pub struct MaterialEntry {
 #[derive(Debug, Validate, Serialize, Deserialize, PostgresMapper, ToSql, FromSql)]
 #[pg_mapper(table = "leaderboard")]
 pub struct ScoreEntry {
-    #[validate(length(equal = 3))]
+    #[validate(length(equal = 3), regex = "constants::NAME_REGEX")]
     pub name: String,
     #[validate(regex = "constants::GENDER_REGEX")]
     pub gender: String,
@@ -57,7 +57,7 @@ pub struct LeaderboardQueryRequest {
 #[derive(Debug, Validate, Serialize, Deserialize, PostgresMapper)]
 #[pg_mapper(table = "leaderboard")]
 pub struct LeaderboardSingleEntry {
-    #[validate(length(equal = 3))]
+    #[validate(length(equal = 3), regex = "constants::NAME_REGEX")]
     pub name: String,
     #[validate(length(equal = 1), regex = "constants::GENDER_REGEX")]
     pub gender: String,
@@ -72,7 +72,7 @@ pub struct LeaderboardSingleEntry {
 #[derive(Debug, Validate, Serialize, Deserialize, PostgresMapper)]
 #[pg_mapper(table = "leaderboard")]
 pub struct LeaderboardMultipleEntries {
-    #[validate(length(equal = 3))]
+    #[validate(length(equal = 3), regex = "constants::NAME_REGEX")]
     pub name: String,
     #[validate(length(equal = 1), regex = "constants::GENDER_REGEX")]
     pub gender: String,

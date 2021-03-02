@@ -19,11 +19,13 @@ pub const INCOMING_MATERIALS_PAYLOAD_LIMIT: usize = 0;
 pub const RATE_LIMIT_INTERVAL_DURATION: u64 = 60;
 pub const RATE_LIMIT_MAX_REQUESTS: usize = 60;
 pub const KEEP_ALIVE_DURATION: usize = 150;
-pub const GAME_CLIENT_URL_DOMAIN_ORIGIN: &str = "sutd-fablab-game.netlify.app";
+pub const GAME_CLIENT_URL_DOMAIN_ORIGIN: &str = "https://sutd-fablab-game.netlify.app";
+pub const PUBLIC_FACING_GAME_CLIENT_URL: &str = "https://overdue.sutd.edu.sg";
 pub const FRONT_DOMAIN: &[u8] = b"openhouse.sutd.edu.sg";
 pub const SERVER_HOST_URL: &str = "sutdoverdue.dev";
 
 lazy_static! {
+    pub static ref NAME_REGEX: Regex = Regex::new(r"^[a-zA-Z]{3}$").expect("error creating the name regex");
     pub static ref DIFFICULTY_REGEX: Regex = Regex::new(r"^easy|normal|hard$").expect("error creating the difficulty regex");
     pub static ref GENDER_REGEX: Regex = Regex::new(r"^[mMfF]{1}$").expect("error creating the gender regex");
     pub static ref DIFFICULTY_MAP: HashMap<&'static str, i32> = [("easy", 0), ("normal", 1), ("hard", 2)].iter().cloned().collect();
