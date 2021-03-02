@@ -24,7 +24,7 @@ For players who contributed to the game's final goal of total materials collecte
 
 > Server performance and data safety/security are the *sine qua non* for this project. To be very honest, this is a ridiculously super over-engineered no-nonsense implementation for *...ahem... [serious business purposes](https://github.com/EnterpriseQualityCoding/FizzBuzzEnterpriseEdition)* (although due to time constraint, this project is not really to that level of no-nonsense... yet?). But I consider it a good thing. Welp. 🤷 Fight me. ᕕ( ᐛ )ᕗ
 
-The reason we utilized [Rust](https://www.rust-lang.org/) is due to its performance, reliability, memory and thread safety, easier concurrency and zero-cost abstractions. It also addresses and solves a lot of pain points present in many other programming languages (with a couple of advantages over/compared to languages such as JavaScript, C/C++ and Go). Its strong and static type system allows us to conduct some initial input validation even before any data is being passed on to inner/deeper functions, ensuring better security of our backend server application. Rust's performance in terms of speed is even comparable to C++ g++ and C gcc (source [here](https://benchmarksgame-team.pages.debian.net/benchmarksgame/which-programs-are-fastest.html)). The reason we utilized [`actix-web`](https://actix.rs/) is because it is production-ready, powerful, pragmatic, type-safe and extremely fast/performant (check out its performance on [TechEmpower Framework Benchmarks](https://www.techempower.com/benchmarks/), keeping in mind the caveats of such benchmarks). It is also the top-performing web framework written in Rust, thereby allowing us to achieve high performance and high security. The reason we utilized [`tokio-postgres`](https://github.com/sfackler/rust-postgres) is because it utilizes the same Tokio runtime used by Actix. As such, this allows us to achieve this synergy of mutual reinforcement and compatibility for the sake of data manipulation, data formatting and data types. It also has awesome community support, which is greatly helpful since there are many helper crates that were able to improve our productivity rate for the sake of delivering the MVP (minimum viable product) of this backend server as we were able to focus better and more on creating the main business logic of this application instead of having to deal with other more menial tasks such as struct data type conversions and complicated manual input validation.
+The reason we utilized [Rust](https://www.rust-lang.org/) is due to its performance, reliability, memory and thread safety, easier concurrency and zero-cost abstractions. It also addresses and solves a lot of pain points present in many other programming languages (with a couple of advantages over/compared to languages such as JavaScript, C/C++ and Go). Its strong and static type system allows us to conduct some initial input validation even before any data is being passed on to inner/deeper functions, ensuring better security of our backend server application. Rust's performance in terms of speed is even comparable to `C++ g++` and `C gcc` (source [here](https://benchmarksgame-team.pages.debian.net/benchmarksgame/which-programs-are-fastest.html)). The reason we utilized [`actix-web`](https://actix.rs/) is because it is production-ready, powerful, pragmatic, type-safe and extremely fast/performant (check out its performance on [TechEmpower Framework Benchmarks](https://www.techempower.com/benchmarks/), keeping in mind the caveats of such benchmarks). It is also the top-performing web framework written in Rust, thereby allowing us to achieve high performance and high security. The reason we utilized [`tokio-postgres`](https://github.com/sfackler/rust-postgres) is because it utilizes the same Tokio runtime used by Actix. As such, this allows us to achieve this synergy of mutual reinforcement and compatibility for the sake of data manipulation, data formatting and data types. It also has awesome community support, which is greatly helpful since there are many helper crates that were able to improve our productivity rate for the sake of delivering the MVP (minimum viable product) of this backend server as we were able to focus better and more on creating the main business logic of this application instead of having to deal with other more menial tasks such as struct data type conversions and complicated manual input validation.
 
 Developing this server code was quite enjoyable, even though the timeline was pretty intensive. Maybe I will become a Rustacean one day. 😌
 
@@ -58,7 +58,7 @@ Developing this server code was quite enjoyable, even though the timeline was pr
     > vcpkg --triplet x64-windows-static-md install openssl
     ```
 
-  > Portable versions of `cmake`, `7zip`, `nuget` and `powershell-core` will be automatically downloaded and extracted by `vcpkg`.
+    > Portable versions of `cmake`, `7zip`, `nuget` and `powershell-core` will be automatically downloaded and extracted by `vcpkg`.
 
 3. Ensure that only access by `localhost` is allowed for PostgreSQL. The following `pg_hba.conf` configuration should be sufficient:
 
@@ -253,11 +253,29 @@ The error handler is set up to avoid unwanted panics and the error message is pu
 
 - Add Cross-Site Request Forgery (CSRF) protection to all of the endpoints (perhaps by using anti-CSRF double-submit cookies tied with a session token?), just as an enhanced security measure.
 
-- If a more specific error message is required/needed in the future, follow [this tutorial](https://blog.logrocket.com/json-input-validation-in-rust-web-services/) to setup the JSON input validation properly.
+- If more specific error messages are required/needed in the future, follow [this tutorial](https://blog.logrocket.com/json-input-validation-in-rust-web-services/) to setup the JSON input validation properly.
 
 - Avoid hardcoded path methods for files.
 
 - Migration from DigitalOcean Droplet to AWS, GCP or Azure since they provide a better, less troublesome and more supportive environment for CI/CD (as well as for project ownership transfer process).
+
+
+
+## Acknowledgements
+
+These are the people who made this project possible to happen:
+
+- SUTD ISTD 2021 Open House Game Development Committee:
+  - [Filbert Cia](https://github.com/FolkLoreee) (Project Director & Overall Coordinator)
+  - [Sean Gunawan](https://github.com/naffins)
+  - [Yu Nicole Frances Cabansay](https://github.com/nicolefranc)
+  - [Daniel Low Yu Hian](https://github.com/nexaitch)
+  - [Arissa Rashid](https://github.com/radjsh)
+  - [Ho Xin Yi Felice](https://github.com/feliceho006)
+  - [Clement Vimal Ravindran](https://github.com/lanvoine)
+  - [James Raphael Tiovalen](https://github.com/jamestiotio)
+- Samuel Seah, Deputy Manager of SUTD's Office of Marketing & Communications as this project's person-in-charge (PIC) for initiating, ideating, planning, executing and marketing/advertising the project, as well as for assisting us with certain administrative approvals
+- SUTD's Office of Information Technology for helping out with the DNS records setup
 
 
 
