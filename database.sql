@@ -17,7 +17,7 @@ CREATE TABLE leaderboard (
 
 CREATE TABLE material (
     id SERIAL PRIMARY KEY,
-    name TEXT NOT NULL,
+    name TEXT NOT NULL UNIQUE,
     value INT NOT NULL CHECK (value > 0 AND value <= 1000),
     quantity INT NOT NULL CHECK (quantity >= 0 AND quantity <= 1000)
 );

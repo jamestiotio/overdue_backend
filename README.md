@@ -76,7 +76,11 @@ Developing this server code prototype was quite enjoyable, even though the timel
     > docker-compose up -d
     ```
 
-    Keep in mind that the system's `postgresql` service should be disabled since the `postgres` Docker service might be in conflict and become unable and fail to bind to the `0.0.0.0:5432` address/port (since the address is already in use).
+    Keep in mind that the system's `postgresql` service should be disabled since the `postgres` Docker service might be in conflict and become unable and fail to bind to the `0.0.0.0:5432` address/port (since the address is already in use). This can be done by running this command:
+
+    ```console
+    $ sudo systemctl stop postgresql.service
+    ```
 
 5. To set up the database, run this command:
 
@@ -150,6 +154,18 @@ Developing this server code prototype was quite enjoyable, even though the timel
 
     ```cmd
     > docker-compose down
+    ```
+
+    For the purposes of final statistics and to assist in distributing the virtual custom badges to the different players and contributors, we can get all the unique emails in the leaderboard and output it into a CSV file by running this command:
+
+    ```console
+    $ psql -h 127.0.0.1 -p 5432 -U overdue -d overdue -c "COPY (SELECT DISTINCT email FROM leaderboard) TO STDOUT WITH CSV HEADER" > emails.csv
+    ```
+
+    An alternative command would be this (might either differ slightly in terms of formatting or produce an identical output for our very specific case):
+
+    ```console
+    $ psql -h 127.0.0.1 -p 5432 -U overdue -d overdue -c "SELECT DISTINCT email FROM leaderboard" --csv > emails.csv
     ```
 
 
