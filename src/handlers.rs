@@ -5,7 +5,7 @@ use deadpool_postgres::{Client, Pool};
 use validator::Validate;
 use actix_files as fs;
 use slog::{o, crit, error, Logger};
-use std::process::Command;
+use std::{io, process::Command};
 
 use crate::models;
 use crate::db;
@@ -116,12 +116,19 @@ pub async fn fortune_cookie_handler() -> Result<impl Responder, std::io::Error> 
     if cfg!(target_os = "windows") {
         fortune = "No fortune cookies on Windows. 😔".to_string();
     } else {
-        let output = Command::new("fortune")
+        // Need to run `sudo apt install fortune` first since this command is not built-in on Ubuntu
+        let output = Command::new("/usr/games/fortune")
         .arg("-s")
         .output()
-        .expect("error failed to execute fortune command");
+        .and_then(|r| match r.status.success() {
+            true => Ok(r),
+            false => Err(io::Error::new(io::ErrorKind::InvalidData, "some error caused the child process to not run properly"))
+        });
 
-        fortune = std::str::from_utf8(&output.stdout).unwrap().to_string();
+        fortune = match output {
+            Ok(_) => std::str::from_utf8(&output.unwrap().stdout).unwrap().to_string(),
+            Err(_e) => "Unfortunately, some internal server error that has occurred prevents us from giving a fortune cookie to you. Apologies! 😔".to_string()
+        }
     }
 
     Ok(HttpResponse::Ok().header("Content-Security-Policy", "default-src 'self'").header("Strict-Transport-Security", "max-age=3600").header("X-XSS-Protection", "1; mode=block").body(fortune))

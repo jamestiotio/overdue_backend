@@ -279,6 +279,8 @@ The error handler is set up to avoid unwanted panics and the error message is pu
 
 - Add a favicon image to the `/favicon.ico` route endpoint.
 
+- Resolve the remaining TODOs (CORS and integration tests).
+
 - Migration from DigitalOcean Droplet to AWS, GCP or Azure since they provide a better, less troublesome and more supportive environment for CI/CD (as well as for project ownership transfer process).
 
 
