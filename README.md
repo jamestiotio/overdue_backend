@@ -123,11 +123,12 @@ Developing this server code prototype was quite enjoyable, even though the timel
 
 7. Optionally, follow [this tutorial](https://www.digitalocean.com/community/tutorials/how-to-securely-manage-secrets-with-hashicorp-vault-on-ubuntu-16-04) to set up HashiCorp Vault for the DigitalOcean VPS for the purpose of storing and accessing/reading environment variables and credentials securely. Remember to use TLS certificates, enable Consul encryption and enable ACLs to make it production-ready. Alternatively, set the appropriate environment variables and credentials for the backend app server (such as the TLS certificates and the PostgreSQL database credentials).
 
-8. For linting and testing, run these commands:
+8. For linting and testing, run these commands (use `cargo-tarpaulin` to get the code lines test coverage percentage):
 
     ```cmd
     > cargo clippy
     > cargo test --all-features
+    > cargo tarpaulin -v --all-features
     ```
 
 9. For development, run these commands:
