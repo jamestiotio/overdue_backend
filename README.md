@@ -150,13 +150,7 @@ Developing this server code prototype was quite enjoyable, even though the timel
 
     We are using GitHub Actions for Continuous Integration and Continuous Delivery. Alternatively, you can follow this [tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-drone-on-ubuntu-20-04) to run tests using Drone CI. We are using SSH as our method of deployment since the alternative would be by using the `doctl` CLI, which is sort of more dangerous/risky in terms of security/safety since instead of potentially "exposing" the SSH key to a single Droplet instance, we might "expose" a whole DigitalOcean PAT API key with read and write permissions in my DigitalOcean account (with the tradeoff of being slightly less robust due to the hardcoded absolute paths to the executable binaries). As such, please be reminded to specify the specific SSH `id_rsa` private keyfile with no passphrase (by using `-i ~/.ssh/id_rsa`), specify the specific SSH `known_hosts` file (by using `-o UserKnownHostsFile=~/.ssh/known_hosts` to avoid the warning of non-establishable ECDSA key fingerprint authenticity of the host) and configure the `$PATH` environment variables accordingly so as to be able to properly run any executable binaries since SSH is a non-interactive shell (perhaps by using absolute paths or by installing the needed executables using the official Ubuntu's package manager `apt`). To allow Git to checkout, clone, pull and merge this repository, we utilize a [read-only deploy key](https://github.blog/2015-06-16-read-only-deploy-keys/) installed on the target server machine (instructions specified [here](https://docs.github.com/en/developers/overview/managing-deploy-keys#deploy-keys)). Before deployment, ensure that the DigitalOcean Droplet has enough memory (RAM) since if not, it will fail to compile and hence deploy as the scheduler in the system will send a `SIGKILL` signal to the `rustc` compiler if it takes up too much memory. Simply re-running the workflow until it achieves a successful deployment should solve this issue.
 
-11. For cleanup, stop the running executable file/process and run this command:
-
-    ```cmd
-    > docker-compose down
-    ```
-
-    For the purposes of final statistics and to assist in distributing the virtual custom badges to the different players and contributors, we can get all the unique emails in the leaderboard and output it into a CSV file by running this command:
+11. For the purposes of final statistics and to assist in distributing the virtual custom badges to the different players and contributors, we can get all the unique emails in the leaderboard and output them into a single CSV file by running this command:
 
     ```console
     $ psql -h 127.0.0.1 -p 5432 -U overdue -d overdue -c "COPY (SELECT DISTINCT email FROM leaderboard) TO STDOUT WITH CSV HEADER" > emails.csv
@@ -166,6 +160,15 @@ Developing this server code prototype was quite enjoyable, even though the timel
 
     ```console
     $ psql -h 127.0.0.1 -p 5432 -U overdue -d overdue -c "SELECT DISTINCT email FROM leaderboard" --csv > emails.csv
+    ```
+
+    And finally, for cleanup, stop the running executable file/process (or background service, if we are using `systemd` and `systemctl`) and take down/shutdown the `postgres` Docker service by running these commands:
+
+    ```console
+    $ sudo systemctl stop overdue_backend.service
+    $ sudo dpkg --purge overdue_backend
+    $ docker-compose down
+    $ sudo rm -rf overdue_backend/
     ```
 
 
