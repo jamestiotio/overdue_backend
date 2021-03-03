@@ -43,13 +43,16 @@ async fn main() -> std::io::Result<()> {
 
     let mut builder: SslAcceptorBuilder;
 
+    // Development mode
     if cfg!(debug_assertions) {
         builder = SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();
         builder
         .set_private_key_file("tls/privkey.pem", SslFiletype::PEM)
         .unwrap();
         builder.set_certificate_chain_file("tls/cert.pem").unwrap();
-    } else {
+    }
+    // Production mode
+    else {
         builder = SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();
         builder
         .set_private_key_file("/root/overdue_backend/tls/privkey.pem", SslFiletype::PEM)
@@ -78,7 +81,7 @@ async fn main() -> std::io::Result<()> {
             // Enable logging
             // .wrap(middleware::Logger::default())
             .wrap(cors)
-            // Register the middleware which allows for a maximum of 1 request per 2 minutes per client based on IP address
+            // Register the middleware which allows for a maximum of 60 requests per minute per client based on IP address
             .wrap(
                 RateLimiter::new(
                 MemoryStoreActor::from(store.clone()).start())

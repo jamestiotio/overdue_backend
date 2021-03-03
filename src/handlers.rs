@@ -128,9 +128,11 @@ pub async fn fortune_cookie_handler() -> Result<impl Responder, std::io::Error> 
 }
 
 pub async fn default_handler() -> Result<fs::NamedFile, std::io::Error> {
+    // Development mode
     #[cfg(debug_assertions)]
     return Ok(fs::NamedFile::open("static/detected_cheater.png")?.set_status_code(StatusCode::NOT_FOUND));
 
+    // Production mode
     #[cfg(not(debug_assertions))]
     return Ok(fs::NamedFile::open("/root/overdue_backend/static/detected_cheater.png")?.set_status_code(StatusCode::NOT_FOUND));
 }
