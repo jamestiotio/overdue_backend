@@ -72,7 +72,7 @@ pub async fn submit_score(state: web::Data<models::AppState>, item: web::Json<mo
     }
 
     // Echo JSON response partially back if everything is okay (follow standard military communication procedure, protocol & etiquette)
-    result.map(|score| HttpResponse::Ok().header("Content-Security-Policy", "default-src 'self'").header("Strict-Transport-Security", "max-age=3600").header("X-XSS-Protection", "1; mode=block").json(score))
+    result.map(|score| HttpResponse::Ok().header("Content-Security-Policy", "default-src 'self'").header("Strict-Transport-Security", "max-age=3600").header("X-XSS-Protection", "1; mode=block").json(score.get(0)))
         .map_err(log_error(log))
 }
 
