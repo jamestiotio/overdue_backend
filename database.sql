@@ -28,10 +28,10 @@ INSERT INTO material (name, value, quantity)
     VALUES  ('jigsawAcrylic', 20, 0),
             ('jigsawMetal', 30, 0),
             ('jigsawWood', 20, 0),
-            ('cutAcrylic', 50, 0),
-            ('cutMetal', 60, 0),
-            ('cutWood', 50, 0),
+            ('drilledAcrylic', 50, 0),
+            ('drilledMetal', 60, 0),
+            ('drilledWood', 50, 0),
             ('acrylicStrips', 55, 0),
             ('woodStrips', 55, 0),
             ('threeDPrint', 25, 0),
-            ('printedPcb', 40, 0);
+            ('solderedPcb', 40, 0);

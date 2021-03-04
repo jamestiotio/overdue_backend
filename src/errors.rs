@@ -1,4 +1,4 @@
-use actix_web::{HttpResponse, error::ResponseError, http::StatusCode};
+use actix_web::{HttpRequest, HttpResponse, error, http::StatusCode};
 use thiserror::Error;
 
 use crate::models::ErrorResponse;
@@ -32,10 +32,10 @@ impl CustomError {
     }
 }
 
-impl ResponseError for CustomError {
+impl error::ResponseError for CustomError {
     fn status_code(&self) -> StatusCode {
         match *self {
-            Self::ValidationError => StatusCode::NOT_ACCEPTABLE,
+            Self::ValidationError => StatusCode::BAD_REQUEST,
             Self::NotFound => StatusCode::NOT_FOUND,
             Self::BadRequest => StatusCode::BAD_REQUEST,
             Self::Forbidden => StatusCode::FORBIDDEN,
@@ -64,15 +64,34 @@ pub fn map_io_error(e: std::io::Error) -> CustomError {
     }
 }
 
+pub fn query_error_handler(err: error::QueryPayloadError, _req: &HttpRequest) -> error::Error {
+    let status_code = StatusCode::BAD_REQUEST;
+    let error_response = ErrorResponse {
+        code: status_code.as_u16(),
+        message: "A malformed query format has been detected.".to_string(),
+        error: "Bad Request".to_string(),
+    };
+    let res = HttpResponse::build(status_code).json(error_response);
+
+    error::InternalError::from_response(err, res).into()
+}
+
 // Define unit tests for each error type
 #[cfg(test)]
 mod tests {
+    use actix_web::{ResponseError, http::StatusCode};
+
     use super::CustomError;
 
     #[test]
     fn test_default_message_validation_error() {
         let validation_error: CustomError = CustomError::ValidationError;
 
+        assert_eq!(
+            validation_error.status_code(),
+            StatusCode::BAD_REQUEST,
+            "Default status code should be shown"
+        );
         assert_eq!(
             validation_error.name(),
             "Validation Error".to_string(),
@@ -90,6 +109,11 @@ mod tests {
         let not_found: CustomError = CustomError::NotFound;
 
         assert_eq!(
+            not_found.status_code(),
+            StatusCode::NOT_FOUND,
+            "Default status code should be shown"
+        );
+        assert_eq!(
             not_found.name(),
             "Not Found".to_string(),
             "Default name should be shown"
@@ -105,6 +129,11 @@ mod tests {
     fn test_default_message_bad_request() {
         let bad_request: CustomError = CustomError::BadRequest;
 
+        assert_eq!(
+            bad_request.status_code(),
+            StatusCode::BAD_REQUEST,
+            "Default status code should be shown"
+        );
         assert_eq!(
             bad_request.name(),
             "Bad Request".to_string(),
@@ -122,6 +151,11 @@ mod tests {
         let forbidden: CustomError = CustomError::Forbidden;
 
         assert_eq!(
+            forbidden.status_code(),
+            StatusCode::FORBIDDEN,
+            "Default status code should be shown"
+        );
+        assert_eq!(
             forbidden.name(),
             "Forbidden Error".to_string(),
             "Default name should be shown"
@@ -138,6 +172,11 @@ mod tests {
         let db_error: CustomError = CustomError::DbError;
 
         assert_eq!(
+            db_error.status_code(),
+            StatusCode::INTERNAL_SERVER_ERROR,
+            "Default status code should be shown"
+        );
+        assert_eq!(
             db_error.name(),
             "Database Error".to_string(),
             "Default name should be shown"
@@ -153,6 +192,11 @@ mod tests {
     fn test_default_message_internal() {
         let internal: CustomError = CustomError::Internal;
 
+        assert_eq!(
+            internal.status_code(),
+            StatusCode::INTERNAL_SERVER_ERROR,
+            "Default status code should be shown"
+        );
         assert_eq!(
             internal.name(),
             "Internal Server Error".to_string(),

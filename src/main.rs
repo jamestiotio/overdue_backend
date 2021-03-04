@@ -1,5 +1,5 @@
 // <main>
-use actix_web::{App, HttpServer, guard, middleware, web};
+use actix_web::{App, FromRequest, HttpServer, guard, http, middleware, web};
 use actix_cors::Cors;
 use actix_ratelimit::{RateLimiter, MemoryStore, MemoryStoreActor};
 use openssl::ssl::{SslAcceptor, SslAcceptorBuilder, SslFiletype, SslMethod};
@@ -61,20 +61,17 @@ async fn main() -> std::io::Result<()> {
     }
 
     HttpServer::new(move || {
-        // TODO: Define Cross-Origin Resource Sharing policy
-        /*
+        // Define Cross-Origin Resource Sharing policy
         let cors = Cors::default()
               .allowed_origin(constants::GAME_CLIENT_URL_DOMAIN_ORIGIN)
-              .allowed_origin_fn(|origin, _req_head| {
-                  origin.as_bytes().ends_with(constants::FRONT_DOMAIN)
-              })
+              .allowed_origin(constants::PUBLIC_FACING_GAME_CLIENT_URL)
+              .allowed_origin(constants::FRONT_DOMAIN)
               .allowed_methods(vec!["GET", "POST"])
-              .allowed_headers(vec![http::header::ACCEPT, http::header::CONTENT_TYPE, http::header::CONTENT_LENGTH, http::header::HOST])
-              .max_age(3600);
-        */
+              .allowed_headers(vec![http::header::CONTENT_TYPE, http::header::CONTENT_LENGTH, http::header::HOST, http::header::USER_AGENT, http::header::ORIGIN, http::header::CONNECTION, http::header::ACCEPT, http::header::ACCEPT_ENCODING, http::header::ACCEPT_LANGUAGE, http::header::ACCEPT_CHARSET, http::header::DNT, http::header::REFERER, http::header::UPGRADE, http::header::UPGRADE_INSECURE_REQUESTS, http::header::STRICT_TRANSPORT_SECURITY, http::header::CONTENT_SECURITY_POLICY, http::header::X_XSS_PROTECTION])
+              .max_age(constants::CORS_MAX_AGE_DURATION);
 
         // Use this permissive policy for debugging phase/development mode
-        let cors = Cors::permissive();
+        // let cors = Cors::permissive();
 
         App::new()
             .wrap(middleware::Compress::default())
@@ -105,6 +102,11 @@ async fn main() -> std::io::Result<()> {
                 .data(web::JsonConfig::default().limit(constants::INCOMING_LEADERBOARD_PAYLOAD_LIMIT))
                 .guard(guard::Host(constants::SERVER_HOST_URL))
                 .route(web::get().to(handlers::get_leaderboard)))
+                .app_data(
+                    web::Query::<models::LeaderboardQueryRequest>::configure(|cfg| {
+                        cfg.error_handler(errors::query_error_handler)
+                    })
+                )
             .service(
                 web::resource("/get_materials{_:/?}")
                 // Limit size of the payload

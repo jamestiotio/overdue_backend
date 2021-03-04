@@ -2,7 +2,7 @@
 
 <p align="center"><img alt="Overdue! Logo" width="420px" src="./images/overdue-logo.png"></p>
 
-![POWERED BY: ISTD SUTDENTS](https://img.shields.io/badge/powered%20by-istd%20SUTDents-73af44?style=for-the-badge&labelColor=d7ef32) ![COVERAGE: 42%](https://img.shields.io/badge/coverage-42%25-orange?style=for-the-badge)
+![POWERED BY: ISTD SUTDENTS](https://img.shields.io/badge/powered%20by-istd%20SUTDents-73af44?style=for-the-badge&labelColor=d7ef32) ![COVERAGE: 45%](https://img.shields.io/badge/coverage-45%25-orange?style=for-the-badge)
 
 [![Build, Run Tests & Deploy](https://img.shields.io/github/workflow/status/jamestiotio/overdue_backend/Build%2C%20Run%20Tests%20%26%20Deploy?label=Build%2C%20Run%20Tests%20%26%20Deploy&logo=github&style=for-the-badge)](https://github.com/jamestiotio/overdue_backend/actions/workflows/main.yaml) [![Security Audit](https://img.shields.io/github/workflow/status/jamestiotio/overdue_backend/Security%20Audit?label=Security%20Audit&logo=github&style=for-the-badge)](https://github.com/jamestiotio/overdue_backend/actions/workflows/audit.yaml) [![Daily Security Audit](https://img.shields.io/github/workflow/status/jamestiotio/overdue_backend/Daily%20Security%20Audit?label=Daily%20Security%20Audit&logo=github&style=for-the-badge)](https://github.com/jamestiotio/overdue_backend/actions/workflows/daily-audit.yaml)
 
@@ -17,6 +17,8 @@ While they are still up, the front-facing frontend game client can be accessed [
 For players who contributed to the game's final goal of total materials collected, they will earn this badge:
 
 <p align="center"><a href="https://au.badgr.com/public/badges/iQfJV6FcSP2cMQlfVyXBug"><img alt="SUTD Overdue! Game Contributor" width="100px" src="https://media.au.badgr.com/uploads/badges/6ce4a23d-ff9f-4d57-bc92-c24724cf569d.svg"></a></p>
+
+Additionally, the top 3 players on the leaderboard of each difficulty will walk away with SGD$20 GrabFood vouchers each!
 
 
 
@@ -251,7 +253,7 @@ There are 3 open endpoints:
   ]
   ```
 
-For the `/submit_score` and `/get_materials` endpoints, except for the `bonus` key entry of the `/submit_score` endpoint, all the other methods/entries/specifications/keys/parameters are REQUIRED (not optional). For the `/get_leaderboard` endpoint, the `max_entries` and `difficulty` query parameters are optional. An HTTPS connection is mandatory/compulsory. Any non-HTTPS connections, any connections from any other domains (as indicated by the corresponding CORS policy) and any requests that does not comply within the stated specifications will be rejected/ignored. For all endpoints, the `Host` header must be specified with the correct value, otherwise a `404 Not Found` error will be returned. A `200 OK` HTTP response code should be received if everything is executed successfully. If there are any errors, the corresponding endpoint would return another error code (such as `400 Bad Request` or `500 Internal Server Error`), along with the corresponding error message content describing what error specifically has occurred (which might be useful for debugging purposes).
+For the `/submit_score` and `/get_materials` endpoints, except for the `bonus` key entry of the `/submit_score` endpoint, all the other methods/entries/specifications/keys/parameters are REQUIRED (not optional) and any additional URL query parameters will be ignored (i.e., they will not affect the final result), otherwise a `400 Bad Request` error will be returned. For the `/get_leaderboard` endpoint, the `max_entries` and `difficulty` query parameters are optional and if those parameters are filled with wrong/incompatible/unserializable data that does not follow the aforementioned specified format, a `400 Bad Request` error will be returned. An HTTPS connection is mandatory/compulsory. Any non-HTTPS connections, any connections from any other domains (as indicated by the corresponding CORS policy) and any requests that does not comply within the stated specifications will be rejected/ignored. For all endpoints, the `Host` header must be specified with the correct value, otherwise a `404 Not Found` error will be returned. A `200 OK` HTTP response code should be received if everything is executed successfully. If there are any errors, the corresponding endpoint would return another error code (such as `400 Bad Request` or `500 Internal Server Error`), along with the corresponding error message content describing what error specifically has occurred (which might be useful for debugging purposes).
 
 If a wrong endpoint resource is specified, a `404 Not Found` error will be returned. Else, if a wrong method is used, a `405 Method Not Allowed` error will be returned (due to the method guards being implemented). Else, if the rate limit is exceeded for a particular IP address, a `429 Too Many Requests` error will be returned. Otherwise, if an error is encountered, this will be the response JSON data format:
 
@@ -279,7 +281,7 @@ The error handler is set up to avoid unwanted panics and the error message is pu
 
 - Add a favicon image to the `/favicon.ico` route endpoint.
 
-- Resolve the remaining TODOs (CORS and integration tests).
+- Resolve the remaining TODO (add and implement integration tests).
 
 - Migration from DigitalOcean Droplet to AWS, GCP or Azure since they provide a better, less troublesome and more supportive environment for CI/CD (as well as for project ownership transfer process).
 

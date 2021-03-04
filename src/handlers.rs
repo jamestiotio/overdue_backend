@@ -40,10 +40,12 @@ pub async fn submit_score(state: web::Data<models::AppState>, item: web::Json<mo
     }
 
     // Validate each material
-    for material in item.materials.clone().iter() {
-        match material.validate() {
-            Ok(_) => (),
-            Err(_e) => return Err(CustomError::ValidationError)
+    if !item.materials.is_empty() {
+        for material in item.materials.clone().iter() {
+            match material.validate() {
+                Ok(_) => (),
+                Err(_e) => return Err(CustomError::ValidationError)
+            }
         }
     }
 

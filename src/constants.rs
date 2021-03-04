@@ -19,9 +19,10 @@ pub const INCOMING_MATERIALS_PAYLOAD_LIMIT: usize = 0;
 pub const RATE_LIMIT_INTERVAL_DURATION: u64 = 60;
 pub const RATE_LIMIT_MAX_REQUESTS: usize = 60;
 pub const KEEP_ALIVE_DURATION: usize = 150;
+pub const CORS_MAX_AGE_DURATION: usize = 150;
 pub const GAME_CLIENT_URL_DOMAIN_ORIGIN: &str = "https://sutd-fablab-game.netlify.app";
 pub const PUBLIC_FACING_GAME_CLIENT_URL: &str = "https://overdue.sutd.edu.sg";
-pub const FRONT_DOMAIN: &[u8] = b"openhouse.sutd.edu.sg";
+pub const FRONT_DOMAIN: &str = "https://openhouse.sutd.edu.sg";
 pub const SERVER_HOST_URL: &str = "sutdoverdue.dev";
 
 lazy_static! {
