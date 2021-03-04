@@ -59,6 +59,7 @@ cargo-watch = "7.5.0"
 cargo-deb = "1.29.1"
 cargo-tarpaulin = "0.16.0"
 cargo-audit = "0.13.1"
+dotenv-linter = "3.0.0"
 tokio-test = "0.4.0"
 
 [profile.release]
