@@ -37,7 +37,7 @@ pub async fn check_if_materials_total_value_sum_up_to_score(score: i32, material
         }
     }
 
-    // Check that materials vector does not contain any duplicate items (i.e. multiple material entries with the same name)
+    // Check that materials vector does not contain any duplicate items (i.e., multiple material entries with the same name)
     // This is an attempt to avoid potential/possible race conditions
     let mut already_seen = vec![];
     for material in materials.iter() {
