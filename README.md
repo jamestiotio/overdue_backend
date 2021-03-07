@@ -2,7 +2,7 @@
 
 <p align="center"><img alt="Overdue! Logo" width="420px" src="./images/overdue-logo.png"></p>
 
-![POWERED BY: ISTD SUTDENTS](https://img.shields.io/badge/powered%20by-istd%20SUTDents-73af44?style=for-the-badge&labelColor=d7ef32) ![COVERAGE: 45%](https://img.shields.io/badge/coverage-45%25-orange?style=for-the-badge)
+![POWERED BY: ISTD SUTDENTS](https://img.shields.io/badge/powered%20by-istd%20SUTDents-73af44?style=for-the-badge&labelColor=d7ef32) ![COVERAGE: 43%](https://img.shields.io/badge/coverage-43%25-orange?style=for-the-badge)
 
 [![Build, Run Tests & Deploy](https://img.shields.io/github/workflow/status/jamestiotio/overdue_backend/Build%2C%20Run%20Tests%20%26%20Deploy?label=Build%2C%20Run%20Tests%20%26%20Deploy&logo=github&style=for-the-badge)](https://github.com/jamestiotio/overdue_backend/actions/workflows/main.yaml) [![Security Audit](https://img.shields.io/github/workflow/status/jamestiotio/overdue_backend/Security%20Audit?label=Security%20Audit&logo=github&style=for-the-badge)](https://github.com/jamestiotio/overdue_backend/actions/workflows/audit.yaml) [![Daily Security Audit](https://img.shields.io/github/workflow/status/jamestiotio/overdue_backend/Daily%20Security%20Audit?label=Daily%20Security%20Audit&logo=github&style=for-the-badge)](https://github.com/jamestiotio/overdue_backend/actions/workflows/daily-audit.yaml)
 
@@ -12,13 +12,15 @@ Game obviously inspired by [Overcooked!](https://www.team17.com/games/overcooked
 
 Frontend code repository for the [Phaser](https://phaser.io/)-based public-facing web game client is accessible [here](https://github.com/nicolefranc/sutd-fablab-game) (might be private).
 
-While they are still up, the front-facing frontend game client can be accessed [here](https://sutd-fablab-game.netlify.app/) (the public-facing one can be seen either [here](https://openhouse.sutd.edu.sg/) or [here](https://overdue.sutd.edu.sg/)) and the backend game server can be accessed [here](https://sutdoverdue.dev/).
+While they are still up, the front-facing frontend game client can be accessed [here](https://sutd-fablab-game.netlify.app/) (the public-facing one can be seen [here](https://overdue.sutd.edu.sg/)) and the backend game server can be accessed [here](https://sutdoverdue.dev/). Our SUTD Open House subpage/category is located [here](https://openhouse.sutd.edu.sg/overdue/).
 
-For players who contributed to the game's final goal of total materials collected, they will earn this badge:
+For players who contributed to the game's final goal of total materials collected, if all 3 project prototypes (1 for each difficulty stage/level) are unlocked by the end of SUTD Open House 2021, they will earn this badge:
 
 <p align="center"><a href="https://au.badgr.com/public/badges/iQfJV6FcSP2cMQlfVyXBug"><img alt="SUTD Overdue! Game Contributor" width="100px" src="https://media.au.badgr.com/uploads/badges/6ce4a23d-ff9f-4d57-bc92-c24724cf569d.svg"></a></p>
 
 Additionally, the top 3 players on the leaderboard of each difficulty will walk away with SGD$20 GrabFood vouchers each!
+
+> The dense ranking algorithm is utilized to determine the rank of each score entry (instead of the standard competition ranking algorithm). The winners will be initially filtered and identified by email and timestamp entries in the database (as well as some rationality, logic and common sense regarding the physically possible maximum achievable total score). If an entry is deemed to be invalid (non-existing email, spam-requests cheating based on timestamp, ridiculously high score, etc.), the next entry in line will be considered. Further (identity document-based) verification by SUTD's administrative offices will also then be conducted behind the scenes to ensure that they are all **unique** individuals/persons (instead of just different disposable emails pointing to/owned by the same person). This ensures that no single individual "hogs"/"claims" all of the available awards/rewards. This also implies that the "top 3" entries on the leaderboard of each difficulty might not actually/accurately represent the "only" individuals who will win the vouchers. Therefore, do try your best to get a high score even if your entry is not listed/displayed on the in-game leaderboard since you might still have a chance to be the "top 3"!
 
 
 
@@ -27,6 +29,8 @@ Additionally, the top 3 players on the leaderboard of each difficulty will walk 
 > Server performance and data safety/security are the *sine qua non* for this project. To be very honest, this is a ridiculously super over-engineered no-nonsense implementation for *...ahem... [serious business purposes](https://github.com/EnterpriseQualityCoding/FizzBuzzEnterpriseEdition)* (although due to time constraint, this project is not really to that level of no-nonsense... yet?). But I consider it a good thing. Welp. 🤷 Fight me. ᕕ( ᐛ )ᕗ
 
 The reason we utilized [Rust](https://www.rust-lang.org/) is due to its performance, reliability, memory and thread safety, easier concurrency and zero-cost abstractions. It also addresses and solves a lot of pain points present in many other programming languages (with a couple of advantages over/compared to languages such as JavaScript, C/C++ and Go). Its strong and static type system allows us to conduct some initial input validation even before any data is being passed on to inner/deeper functions, ensuring better security of our backend server application. Rust's performance in terms of speed is even comparable to `C++ g++` and `C gcc` (source [here](https://benchmarksgame-team.pages.debian.net/benchmarksgame/which-programs-are-fastest.html)). The reason we utilized [`actix-web`](https://actix.rs/) is because it is production-ready, powerful, pragmatic, type-safe and extremely fast/performant (check out its performance on [TechEmpower Framework Benchmarks](https://www.techempower.com/benchmarks/), keeping in mind the caveats of such benchmarks). It is also the top-performing web framework written in Rust, thereby allowing us to achieve high performance and high security. The reason we utilized [`tokio-postgres`](https://github.com/sfackler/rust-postgres) is because it utilizes the same Tokio runtime used by Actix. As such, this allows us to achieve this synergy of mutual reinforcement and compatibility for the sake of data manipulation, data formatting and data types. It also has awesome community support, which is greatly helpful since there are many helper crates that were able to improve our productivity rate for the sake of delivering the MVP (minimum viable product) of this backend server as we were able to focus better and more on creating the main business logic of this application instead of having to deal with other more menial tasks such as struct data type conversions and complicated manual input validation.
+
+The validation technique itself is not impenetrable/unbreakable/unspoofable. Some form of end-to-end encryption or advanced cookie-based authentication could be used in the future to guarantee that nobody could inspect the content of the packets, but there is no avoiding the fact that it is entirely possible for malicious users to pose/camouflage as regular players and send legal, even though physically impossible to achieve (or probable with very low probability since it requires a whole lot of luck), JSON payloads. We could obfuscate the payload but it just distances away the possibility of cheating and hacking with more effort, instead of completely preventing them from happening in the first place. We have separated the frontend and backend elements for the sake of preventing malicious scripts to be run in one server (which is much harder to prevent considering that any credentials put on the frontend game client side will be exposed to all users, no matter how uglified/obfuscated it might be). We have implemented validation techniques to the point whereby only legal payloads are accepted. Even then, there are payloads which are still considered to be valid (since they are *technically* possible within the limits of our application), and yet it might seem obvious to the human eyes that such payloads are definitely considered to be the result of cheating instead of proper play of the game. We could implement behaviour tracking on the game client side to identify which payloads have a high degree/probability of being the result of cheating, but even those scripts could definitely be circumvented somehow (since we do not have full control over the players' devices anyway to install any anti-cheating tools, which would be ethically/morally questionable to some elements of invasion of privacy). The point of the validation is to provide enough distance to deter most people from attempting to cheat. However, if anyone is willing and able enough to put in the necessary time and effort to circumvent the validation, it is definitely possible. All games are cheatable and hackable. However, if the validation is implemented in such a way that someone who is willing to cheat will need to put in the same (or perhaps even more) required amount of effort and time as just playing the game legally, I consider that validation as a success. Figuring out how to hack/cheat the game will be the game itself for said hacker/cheater. Besides, I am honored if someone attempted to cheat/hack at this small game of ours.
 
 Developing this server code prototype was quite enjoyable, even though the timeline was pretty intensive. Maybe I will become a Rustacean one day. 😌
 
@@ -98,7 +102,7 @@ Developing this server code prototype was quite enjoyable, even though the timel
     | A Record | `www` | `<DigitalOcean Droplet's IPv4 Address>` | 60 min |
     | CAA Record | `@` | `0 issue letsencrypt.org` | 60 min |
 
-    Secondly, get a domain name for the game client as well for the purposes of the CORS policy. Preferably, the domains should have TLD-level HSTS enabled (i.e., included in the HSTS preload secure namespace list, such as `.APP` or `.DEV` domains) so as to force secure HTTPS connections through browsers by default, which actually does not affect Let's Encrypt ACME Challenge verification process (HTTP connections would not be automatically redirected to HTTPS since [this PR](https://github.com/petertrotman/actix-web-middleware-redirect-https/pull/4) is not merged yet). Regarding prevention of XSS attacks, the `Content-Security-Policy` header should be automatically set by `actix-web` and the TLS implementation for this back-end server. The front-end game client would include the corresponding appropriate `Content-Security-Policy` header as well. By default, the backend server code will be rate-limited and will possess enough necessary input validation and verification (any malformed, incompatible or invalid input data will be automatically rejected). Use `iptables` to limit the number of SSH connection attempts. Install `fail2ban` to further protect the SSH port 22. Use the SSH key pairs provided by DigitalOcean. Use port knocking. Do not allow root logins. Restrict access to a named group. Do not use shared logins. Do not allow direct access below the presentation tier. Optionally, we can also set up a dedicated Droplet host acting as a SSH jump server box. For additional security, a load balancer could also be deployed to mitigate DDoS attacks. These are the settings for the DigitalOcean Cloud Firewall:
+    Secondly, get a domain name for the game client as well for the purposes of the CORS policy. Preferably, the domains should have TLD-level HSTS enabled (i.e., included in the HSTS preload secure namespace list, such as `.APP` or `.DEV` domains) so as to force secure HTTPS connections through browsers by default, which actually does not affect the Let's Encrypt ACME Challenge verification process (HTTP connections would not be automatically redirected to HTTPS since [this PR](https://github.com/petertrotman/actix-web-middleware-redirect-https/pull/4) is not merged yet). Regarding prevention of XSS attacks, the `Content-Security-Policy` header should be automatically set by `actix-web` and the TLS implementation for this back-end server. The front-end game client would include the corresponding appropriate `Content-Security-Policy` header as well. By default, the backend server code will be rate-limited and will possess enough necessary input validation and verification (any malformed, incompatible or invalid input data will be automatically rejected). Use `iptables` to limit the number of SSH connection attempts. Install `fail2ban` to further protect the SSH port 22. Use the SSH key pairs provided by DigitalOcean. Use port knocking. Do not allow root logins. Restrict access to a named group. Do not use shared logins. Do not allow direct access below the presentation tier. Optionally, we can also set up a dedicated Droplet host acting as a SSH jump server box. For additional security, a load balancer could also be deployed to mitigate DDoS attacks. These are the settings for the DigitalOcean Cloud Firewall:
 
     - Inbound Rules:
       | Type | Protocol | Port Range | Sources |
@@ -115,7 +119,7 @@ Developing this server code prototype was quite enjoyable, even though the timel
       | All TCP | TCP | All ports | `All IPv4` `All IPv6` |
       | All UDP | UDP | All ports | `All IPv4` `All IPv6` |
     
-    For testing purposes, you can generate a self-signed certificate-key pair of `cert.pem` and `privkey.pem` by running these commands (on Ubuntu/Linux or a UNIX-based system equipped with OpenSSL):
+    For testing purposes, you can generate your own self-signed certificate-key pair of `cert.pem` and `privkey.pem` by running these commands (on Ubuntu/Linux or a UNIX-based system equipped with OpenSSL):
 
     ```console
     $ touch ~/.rnd
@@ -130,7 +134,7 @@ Developing this server code prototype was quite enjoyable, even though the timel
     ```cmd
     > cargo clippy
     > cargo test --all-features
-    > cargo tarpaulin -v --all-features
+    > cargo tarpaulin --verbose --all-features --workspace
     ```
 
 9. For development, run these commands:
@@ -141,6 +145,8 @@ Developing this server code prototype was quite enjoyable, even though the timel
     > cargo build
     > cargo watch -x run
     ```
+
+    NOTE: You might need to change the `SERVER__PORT` environment variable in the `.env` file to `8443` instead of `443` if you encounter some permission denied issue on your local machine during development.
 
 10. For release, you can install the binary by running `cargo install --bin overdue_backend --path .` or by running these commands (by default, the executable is placed in the `./target/release` folder):
 
@@ -153,16 +159,31 @@ Developing this server code prototype was quite enjoyable, even though the timel
 
     We are using GitHub Actions for Continuous Integration and Continuous Delivery. Alternatively, you can follow this [tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-drone-on-ubuntu-20-04) to run tests using Drone CI. We are using SSH as our method of deployment since the alternative would be by using the `doctl` CLI, which is sort of more dangerous/risky in terms of security/safety since instead of potentially "exposing" the SSH key to a single Droplet instance, we might "expose" a whole DigitalOcean PAT API key with read and write permissions in my DigitalOcean account (with the tradeoff of being slightly less robust due to the hardcoded absolute paths to the executable binaries). As such, please be reminded to specify the specific SSH `id_rsa` private keyfile with no passphrase (by using `-i ~/.ssh/id_rsa`), specify the specific SSH `known_hosts` file (by using `-o UserKnownHostsFile=~/.ssh/known_hosts` to avoid the warning of non-establishable ECDSA key fingerprint authenticity of the host) and configure the `$PATH` environment variables accordingly so as to be able to properly run any executable binaries since SSH is a non-interactive shell (perhaps by using absolute paths or by installing the needed executables using the official Ubuntu's package manager `apt`). To allow Git to checkout, clone, pull and merge this repository, we utilize a [read-only deploy key](https://github.blog/2015-06-16-read-only-deploy-keys/) installed on the target server machine (instructions specified [here](https://docs.github.com/en/developers/overview/managing-deploy-keys#deploy-keys)). Before deployment, ensure that the DigitalOcean Droplet has enough memory (RAM) since if not, it will fail to compile and hence deploy as the scheduler in the system will send a `SIGKILL` signal to the `rustc` compiler if it takes up too much memory. Simply re-running the workflow until it achieves a successful deployment should solve this issue.
 
-11. For the purposes of final statistics and to assist in distributing the virtual custom badges to the different players and contributors, we can get all the unique emails in the leaderboard and output them into a single CSV file by running this command:
+11. As when the server is live during production, if the tables' properties need to be altered for some whatever reason, we can do so by running the `ALTER TABLE` SQL command (refer to the [documentation](https://www.postgresql.org/docs/current/sql-altertable.html) for more information).
+
+    We can count the number of entries/games played and unique emails submitted to the leaderboard respectively by running this command:
+
+    ```sql
+    # SELECT COUNT(*) FROM leaderboard;
+    # SELECT COUNT(DISTINCT email) FROM leaderboard;
+    ```
+
+    For the purposes of final statistics and to assist in distributing the virtual custom badges to the different players and contributors, we can get all the unique emails in the leaderboard and output them into a single CSV file by running this command (we follow [Badgr](https://badgr.com/)'s sample CSV template format from [here](https://docs.google.com/spreadsheets/d/1mvrTrtx-IllkLXHVLdZBZlybCtlvklGe5suiVUpLXPE)):
 
     ```console
-    $ psql -h 127.0.0.1 -p 5432 -U overdue -d overdue -c "COPY (SELECT DISTINCT email FROM leaderboard) TO STDOUT WITH CSV HEADER" > emails.csv
+    $ psql -h 127.0.0.1 -p 5432 -U overdue -d overdue -c 'COPY (SELECT DISTINCT email AS "Identifier" FROM leaderboard) TO STDOUT WITH CSV HEADER' > emails.csv
     ```
 
     An alternative command would be this (might either differ slightly in terms of formatting or produce an identical output for our very specific case):
 
     ```console
-    $ psql -h 127.0.0.1 -p 5432 -U overdue -d overdue -c "SELECT DISTINCT email FROM leaderboard" --csv > emails.csv
+    $ psql -h 127.0.0.1 -p 5432 -U overdue -d overdue -c 'SELECT DISTINCT email AS "Identifier" FROM leaderboard' --csv > emails.csv
+    ```
+
+    For the purpose of giving out the GrabFood vouchers, we can select the top 3 unique emails for each difficulty by running this command:
+
+    ```console
+    $ for i in {0..2}; do (echo "SELECT MIN(subquery.id) AS id, subquery.email, subquery.difficulty, MIN(subquery.rank) AS rank FROM (SELECT id, email, difficulty, dense_rank() OVER (PARTITION BY difficulty ORDER BY score DESC) rank FROM leaderboard WHERE difficulty = $i) subquery GROUP BY subquery.email, subquery.difficulty ORDER BY rank ASC FETCH FIRST 3 ROWS ONLY;" | psql -h 127.0.0.1 -p 5432 -U overdue -d overdue --csv; echo "") >> vouchers.csv; done
     ```
 
     And finally, for cleanup, stop the running executable file/process (or background service, if we are using `systemd` and `systemctl`) and take down/shutdown the `postgres` Docker service by running these commands:
@@ -205,8 +226,11 @@ There are 3 open endpoints:
   ```
 
   The `bonus` key is optional. If it is never specified, the default value is `0`.
+  
+  The JSON payload size limit is 1 KiB (which should be able to handle the maximum stretchable legal limit of each key's value, as well as a pretty decent length of the email key's value). Anything else larger than that will be rejected since it will be considered as a malicious spam payload (perhaps from a DDoS attempt or from a MitM-tampered payload).
 
   A successful response JSON data format is as follows:
+
   ```json
   {
     "name": "<some-name-sanitised-by-james>",
@@ -265,7 +289,7 @@ If a wrong endpoint resource is specified, a `404 Not Found` error will be retur
 }
 ```
 
-The error handler is set up to avoid unwanted panics and the error message is purposefully vague and not too specific so as to avoid prying eyes from figuring out and reverse-engineering the specific cause of error and forming a malicious payload that fits within the reasonable limits of our application.
+The error handler is set up to avoid unwanted panics and the error message is purposefully vague and not too specific so as to avoid prying eyes from figuring out and reverse-engineering the specific cause of error and forming a malicious payload that fits within the reasonable limits of our application. The validation techniques that have been implemented limit the crafting of malicious payloads to the level/point whereby the amount of effort required (as well as the level of "ability"/"power" gained/obtained from such an act) to reverse engineer the backend server code would be roughly similar to the amount of effort required to reverse engineer the scoring implementation on the game client side, which should be considered as reasonable enough for a decent application in production.
 
 
 
@@ -278,8 +302,6 @@ The error handler is set up to avoid unwanted panics and the error message is pu
 - If more specific error messages are required/needed in the future, follow [this tutorial](https://blog.logrocket.com/json-input-validation-in-rust-web-services/) to setup the JSON input validation properly.
 
 - Avoid hardcoded path methods for files.
-
-- Add a favicon image to the `/favicon.ico` route endpoint.
 
 - Resolve the remaining TODO (add and implement integration tests).
 

@@ -10,7 +10,7 @@ CREATE TABLE leaderboard (
     gender CHAR(1) NOT NULL,
     email TEXT NOT NULL,
     difficulty INT NOT NULL,
-    score INT NOT NULL CHECK (score >= 0 AND score <= 999999),
+    score INT NOT NULL CHECK (score >= 0 AND score <= 4060),
     materials JSONB,
     creation_date TIMESTAMPTZ NOT NULL DEFAULT (clock_timestamp() AT TIME ZONE 'Asia/Singapore')
 );
@@ -19,7 +19,7 @@ CREATE TABLE material (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL UNIQUE,
     value INT NOT NULL CHECK (value > 0 AND value <= 1000),
-    quantity INT NOT NULL CHECK (quantity >= 0 AND quantity <= 1000)
+    quantity INT NOT NULL CHECK (quantity >= 0 AND quantity <= 10000)
 );
 
 

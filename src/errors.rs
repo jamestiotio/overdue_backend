@@ -64,6 +64,18 @@ pub fn map_io_error(e: std::io::Error) -> CustomError {
     }
 }
 
+pub fn json_error_handler(err: error::JsonPayloadError, _req: &HttpRequest) -> error::Error {
+    let status_code = StatusCode::BAD_REQUEST;
+    let error_response = ErrorResponse {
+        code: status_code.as_u16(),
+        message: "A malformed JSON payload format has been detected.".to_string(),
+        error: "Bad Request".to_string(),
+    };
+    let res = HttpResponse::build(status_code).json(error_response);
+
+    error::InternalError::from_response(err, res).into()
+}
+
 pub fn query_error_handler(err: error::QueryPayloadError, _req: &HttpRequest) -> error::Error {
     let status_code = StatusCode::BAD_REQUEST;
     let error_response = ErrorResponse {

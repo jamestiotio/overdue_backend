@@ -92,14 +92,18 @@ async fn main() -> std::io::Result<()> {
             // Define all of the available endpoints
             .service(
                 web::resource("/submit_score{_:/?}")
-                // Limit size of the payload
                 .data(web::JsonConfig::default().limit(constants::INCOMING_SCORE_PAYLOAD_LIMIT))
                 .guard(guard::Host(constants::SERVER_HOST_URL))
                 .route(web::post().to(handlers::submit_score)))
+                .app_data(
+                    web::Json::<models::ScoreEntry>::configure(|cfg| {
+                        // Limit size of the payload
+                        cfg.limit(constants::INCOMING_SCORE_PAYLOAD_LIMIT)
+                           .error_handler(errors::json_error_handler)
+                    })
+                )
             .service(
                 web::resource("/get_leaderboard{_:/?}")
-                // Limit size of the payload
-                .data(web::JsonConfig::default().limit(constants::INCOMING_LEADERBOARD_PAYLOAD_LIMIT))
                 .guard(guard::Host(constants::SERVER_HOST_URL))
                 .route(web::get().to(handlers::get_leaderboard)))
                 .app_data(
@@ -109,8 +113,6 @@ async fn main() -> std::io::Result<()> {
                 )
             .service(
                 web::resource("/get_materials{_:/?}")
-                // Limit size of the payload
-                .data(web::JsonConfig::default().limit(constants::INCOMING_MATERIALS_PAYLOAD_LIMIT))
                 .guard(guard::Host(constants::SERVER_HOST_URL))
                 .route(web::get().to(handlers::get_materials)))
             // Define easter egg endpoints
@@ -122,6 +124,11 @@ async fn main() -> std::io::Result<()> {
                 web::resource("/fortune{_:/?}")
                 .guard(guard::Host(constants::SERVER_HOST_URL))
                 .route(web::get().to(handlers::fortune_cookie_handler)))
+            // Serve favicon image
+            .service(
+                web::resource("/favicon.ico")
+                .guard(guard::Host(constants::SERVER_HOST_URL))
+                .route(web::get().to(handlers::favicon_handler)))
             // Default 404 handler
             .default_service(web::route().to(handlers::default_handler))
     })

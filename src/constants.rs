@@ -5,7 +5,7 @@ use std::sync::atomic::AtomicUsize;
 use slog::Level;
 
 // Define non-confidential constants here
-pub const MAX_SCORE: i32 = 999999;
+pub const MAX_SCORE: i32 = 4060;
 pub const MIN_SCORE: i32 = 0;
 pub const MAX_MATERIALS: i32 = 10;
 pub const MIN_MATERIALS: i32 = 0;
@@ -14,8 +14,6 @@ pub const MIN_LEADERBOARD_LENGTH: u32 = 1;
 pub const MAX_BONUS_VALUE: i32 = 10;
 pub const MIN_BONUS_VALUE: i32 = 0;
 pub const INCOMING_SCORE_PAYLOAD_LIMIT: usize = 1024;
-pub const INCOMING_LEADERBOARD_PAYLOAD_LIMIT: usize = 0;
-pub const INCOMING_MATERIALS_PAYLOAD_LIMIT: usize = 0;
 pub const RATE_LIMIT_INTERVAL_DURATION: u64 = 60;
 pub const RATE_LIMIT_MAX_REQUESTS: usize = 60;
 pub const KEEP_ALIVE_DURATION: usize = 150;

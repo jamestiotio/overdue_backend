@@ -136,6 +136,16 @@ pub async fn fortune_cookie_handler() -> Result<impl Responder, std::io::Error> 
     Ok(HttpResponse::Ok().header("Content-Security-Policy", "default-src 'self'").header("Strict-Transport-Security", "max-age=3600").header("X-XSS-Protection", "1; mode=block").body(fortune))
 }
 
+pub async fn favicon_handler() -> Result<fs::NamedFile, std::io::Error> {
+    // Development mode
+    #[cfg(debug_assertions)]
+    return Ok(fs::NamedFile::open("static/favicon.ico")?.set_status_code(StatusCode::OK));
+
+    // Production mode
+    #[cfg(not(debug_assertions))]
+    return Ok(fs::NamedFile::open("/root/overdue_backend/static/favicon.ico")?.set_status_code(StatusCode::OK));
+}
+
 pub async fn default_handler() -> Result<fs::NamedFile, std::io::Error> {
     // Development mode
     #[cfg(debug_assertions)]
