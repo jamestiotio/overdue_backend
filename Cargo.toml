@@ -26,6 +26,7 @@ integration = []
 [dependencies]
 # Avoid specifying non-essential extra unused dependencies so as to avoid potential version incompatibility conflicts (multiple transitive dependencies can cause some serious grief)
 actix-web = { version = "3.3.2", features = ["openssl"] }
+actix-rt = "1.1.1"
 actix-cors = "0.5.4"
 actix-ratelimit = "0.3.1"
 actix-files = "0.5.0"

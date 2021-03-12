@@ -91,6 +91,7 @@ pub struct ErrorResponse {
 }
 
 // Model for logging
+#[derive(Clone)]
 pub struct AppState {
     pub pool: Pool,
     pub log: Logger

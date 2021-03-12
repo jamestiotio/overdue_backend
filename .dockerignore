@@ -1,2 +1,12 @@
-target/
-.vscode/
+# Git
+.git
+.gitattributes
+.gitignore
+
+# Docker
+docker-compose.yml
+Dockerfile
+.dockerignore
+
+target
+.vscode

@@ -15,7 +15,6 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: postgres
-        # This will assign a random free host port
         ports:
           - 5432:5432
         # This is needed because the Postgres container does not provide a healthcheck
@@ -30,11 +29,14 @@ jobs:
     - name: Run Tests
       run: |
         sudo apt update
-        sudo apt install -y build-essential
-        mv .env.test .env && cargo test --all-features --verbose
+        sudo apt install -y build-essential postgresql-client
+        mv .env.test .env
+        psql -h localhost -p 5432 -U postgres postgres < database.sql
+        cargo test --all-features --verbose
       env:
         RUST_LOG: actix_web=info,actix_server=info
-        RUST_BACKTRACE: FULL
+        RUST_BACKTRACE: full
+        PGPASSWORD: postgres
   deploy:
     runs-on: ubuntu-latest
     needs: build_and_test

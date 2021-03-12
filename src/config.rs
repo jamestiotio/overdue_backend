@@ -1,5 +1,7 @@
+use deadpool_postgres::Pool;
 use serde::Deserialize;
 use config::ConfigError;
+use tokio_postgres::NoTls;
 
 #[derive(Deserialize)]
 pub struct ServerConfig {
@@ -20,5 +22,9 @@ impl Config {
         cfg.merge(config::Environment::new().separator("__"))?;
         
         cfg.try_into()
+    }
+
+    pub fn configure_pool(&self) -> Pool {
+        self.pg.create_pool(NoTls).expect("error creating deadpool postgres database pool")
     }
 }

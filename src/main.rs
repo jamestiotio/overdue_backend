@@ -24,7 +24,7 @@ async fn main() -> std::io::Result<()> {
 
     let config = config::Config::from_env().expect("error getting configuration from environment");
 
-    let pool = config.pg.create_pool(NoTls).expect("error creating deadpool postgres database pool");
+    let pool = config.configure_pool();
 
     // Initialize store
     let store = MemoryStore::new();
@@ -33,7 +33,7 @@ async fn main() -> std::io::Result<()> {
     // Might need https://crates.io/crates/slog-scope and https://crates.io/crates/slog-stdlog as additional dependencies
     /*
     std::env::set_var("RUST_LOG", "actix_web=info,actix_server=info");
-    std::env::set_var("RUST_BACKTRACE", "FULL");
+    std::env::set_var("RUST_BACKTRACE", "full");
     */
 
     let logger = logging::configure_log();
@@ -141,4 +141,4 @@ async fn main() -> std::io::Result<()> {
 
 #[cfg(test)]
 #[cfg(feature = "integration")]
-mod tests;
+mod integration_tests;

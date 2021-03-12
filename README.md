@@ -1,8 +1,8 @@
-# Overdue! (Database Server Backend API)
+# Overdue! (Database Server Backend API) <a name="top"></a>
 
 <p align="center"><img alt="Overdue! Logo" width="420px" src="./images/overdue-logo.png"></p>
 
-![POWERED BY: ISTD SUTDENTS](https://img.shields.io/badge/powered%20by-istd%20SUTDents-73af44?style=for-the-badge&labelColor=d7ef32) ![COVERAGE: 43%](https://img.shields.io/badge/coverage-43%25-orange?style=for-the-badge)
+![POWERED BY: ISTD SUTDENTS](https://img.shields.io/badge/powered%20by-istd%20SUTDents-73af44?style=for-the-badge&labelColor=d7ef32) ![COVERAGE: 70%](https://img.shields.io/badge/coverage-70%25-yellow?style=for-the-badge)
 
 [![Build, Run Tests & Deploy](https://img.shields.io/github/workflow/status/jamestiotio/overdue_backend/Build%2C%20Run%20Tests%20%26%20Deploy?label=Build%2C%20Run%20Tests%20%26%20Deploy&logo=github&style=for-the-badge)](https://github.com/jamestiotio/overdue_backend/actions/workflows/main.yaml) [![Security Audit](https://img.shields.io/github/workflow/status/jamestiotio/overdue_backend/Security%20Audit?label=Security%20Audit&logo=github&style=for-the-badge)](https://github.com/jamestiotio/overdue_backend/actions/workflows/audit.yaml) [![Daily Security Audit](https://img.shields.io/github/workflow/status/jamestiotio/overdue_backend/Daily%20Security%20Audit?label=Daily%20Security%20Audit&logo=github&style=for-the-badge)](https://github.com/jamestiotio/overdue_backend/actions/workflows/daily-audit.yaml)
 
@@ -24,7 +24,21 @@ Additionally, the top 3 players on the leaderboard of each difficulty will walk 
 
 
 
-## Justification of Design Decisions
+## Table of Contents <a name="toc"></a>
+
+- [Overdue Backend](#top)
+  - [Table of Contents](#toc)
+  - [Justification of Design Decisions](#design)
+  - [Setup Instructions](#setup)
+  - [API Endpoints](#api)
+  - [Future Development Notes](#future-dev)
+  - [Acknowledgements](#acknowledgements)
+
+
+
+## Justification of Design Decisions <a name="design"></a>
+
+[back to top](#top)
 
 > Server performance and data safety/security are the *sine qua non* for this project. To be very honest, this is a ridiculously super over-engineered no-nonsense implementation for *...ahem... [serious business purposes](https://github.com/EnterpriseQualityCoding/FizzBuzzEnterpriseEdition)* (although due to time constraint, this project is not really to that level of no-nonsense... yet?). But I consider it a good thing. Welp. 🤷 Fight me. ᕕ( ᐛ )ᕗ
 
@@ -36,7 +50,9 @@ Developing this server code prototype was quite enjoyable, even though the timel
 
 
 
-## Setup Instruction
+## Setup Instructions <a name="setup"></a>
+
+[back to top](#top)
 
 1. Download and install Rust with its toolchain (including `rustc`, `cargo` and `rustup`) from [here](https://www.rust-lang.org/tools/install). After that, optionally run these commands to use Clippy:
 
@@ -124,8 +140,10 @@ Developing this server code prototype was quite enjoyable, even though the timel
     ```console
     $ touch ~/.rnd
     $ dd if=/dev/urandom of=~/.rnd bs=256 count=1
-    $ sudo openssl req -x509 -newkey rsa:4096 -nodes -keyout tls/privkey.pem -out tls/cert.pem -days 365 -subj '/CN=localhost'
+    $ sudo su -c 'openssl req -x509 -newkey rsa:4096 -nodes -sha512 -keyout tls/privkey.pem -out tls/cert.pem -days 365 -subj "/CN=localhost" -extensions EXT -config <(printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:localhost\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")'
     ```
+
+    For the Postgres database server, since we cannot generate a TLS certificate for `localhost` using Let's Encrypt (more information [here](https://letsencrypt.org/docs/certificates-for-localhost/)), we can use either another self-signed certificate or use [`minica`](https://github.com/jsha/minica) (re-using the aforegenerated SSL certificate for our public Internet-facing backend server domain is definitely out of the question since the local machine's DNS configuration would need to be configured to have the same domain name as the server until it is *almost out of whack*).
 
 7. Optionally, follow [this tutorial](https://www.digitalocean.com/community/tutorials/how-to-securely-manage-secrets-with-hashicorp-vault-on-ubuntu-16-04) to set up HashiCorp Vault for the DigitalOcean VPS for the purpose of storing and accessing/reading environment variables and credentials securely. Remember to use TLS certificates, enable Consul encryption and enable ACLs to make it production-ready. Alternatively, set the appropriate environment variables and credentials for the backend app server (such as the TLS certificates and the PostgreSQL database credentials).
 
@@ -157,7 +175,7 @@ Developing this server code prototype was quite enjoyable, even though the timel
     > cargo run --release
     ```
 
-    We are using GitHub Actions for Continuous Integration and Continuous Delivery. Alternatively, you can follow this [tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-drone-on-ubuntu-20-04) to run tests using Drone CI. We are using SSH as our method of deployment since the alternative would be by using the `doctl` CLI, which is sort of more dangerous/risky in terms of security/safety since instead of potentially "exposing" the SSH key to a single Droplet instance, we might "expose" a whole DigitalOcean PAT API key with read and write permissions in my DigitalOcean account (with the tradeoff of being slightly less robust due to the hardcoded absolute paths to the executable binaries). As such, please be reminded to specify the specific SSH `id_rsa` private keyfile with no passphrase (by using `-i ~/.ssh/id_rsa`), specify the specific SSH `known_hosts` file (by using `-o UserKnownHostsFile=~/.ssh/known_hosts` to avoid the warning of non-establishable ECDSA key fingerprint authenticity of the host) and configure the `$PATH` environment variables accordingly so as to be able to properly run any executable binaries since SSH is a non-interactive shell (perhaps by using absolute paths or by installing the needed executables using the official Ubuntu's package manager `apt`). To allow Git to checkout, clone, pull and merge this repository, we utilize a [read-only deploy key](https://github.blog/2015-06-16-read-only-deploy-keys/) installed on the target server machine (instructions specified [here](https://docs.github.com/en/developers/overview/managing-deploy-keys#deploy-keys)). Before deployment, ensure that the DigitalOcean Droplet has enough memory (RAM) since if not, it will fail to compile and hence deploy as the scheduler in the system will send a `SIGKILL` signal to the `rustc` compiler if it takes up too much memory. Simply re-running the workflow until it achieves a successful deployment should solve this issue.
+    We are using GitHub Actions for Continuous Integration and Continuous Delivery. Alternatively, you can follow this [tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-drone-on-ubuntu-20-04) to run tests using Drone CI. We are using SSH as our method of deployment since the alternative would be by using the [`doctl`](https://github.com/digitalocean/action-doctl) CLI, which is sort of more dangerous/risky in terms of security/safety since instead of potentially "exposing" the SSH key to a single Droplet instance, we might "expose" a whole DigitalOcean PAT API key with read and write permissions in my DigitalOcean account (with the tradeoff of being slightly less robust due to the hardcoded absolute paths to the executable binaries). As such, please be reminded to specify the specific SSH `id_rsa` private keyfile with no passphrase (by using `-i ~/.ssh/id_rsa`), specify the specific SSH `known_hosts` file (by using `-o UserKnownHostsFile=~/.ssh/known_hosts` to avoid the warning of non-establishable ECDSA key fingerprint authenticity of the host) and configure the `$PATH` environment variables accordingly so as to be able to properly run any executable binaries since SSH is a non-interactive shell (perhaps by using absolute paths or by installing the needed executables using the official Ubuntu's package manager `apt`). To allow Git to checkout, clone, pull and merge this repository, we utilize a [read-only deploy key](https://github.blog/2015-06-16-read-only-deploy-keys/) installed on the target server machine (instructions specified [here](https://docs.github.com/en/developers/overview/managing-deploy-keys#deploy-keys)). Before deployment, ensure that the DigitalOcean Droplet has enough memory (RAM) since if not, it will fail to compile and hence deploy as the scheduler in the system will send a `SIGKILL` signal to the `rustc` compiler if it takes up too much memory. Simply re-running the workflow until it achieves a successful deployment should solve this issue.
 
 11. As when the server is live during production, if the tables' properties need to be altered for some whatever reason, we can do so by running the `ALTER TABLE` SQL command (refer to the [documentation](https://www.postgresql.org/docs/current/sql-altertable.html) for more information).
 
@@ -197,7 +215,9 @@ Developing this server code prototype was quite enjoyable, even though the timel
 
 
 
-## API Endpoints
+## API Endpoints <a name="api"></a>
+
+[back to top](#top)
 
 There are 3 open endpoints:
 
@@ -293,7 +313,9 @@ The error handler is set up to avoid unwanted panics and the error message is pu
 
 
 
-## Future Development Notes
+## Future Development Notes <a name="future-dev"></a>
+
+[back to top](#top)
 
 - For an extreme level of optimization, might want to consider using [Protocol Buffers](https://developers.google.com/protocol-buffers) instead of JSON so as to guarantee type-safety, prevent schema violations, provide simpler data accessors, have a smaller size of data being transferred around and enjoy faster serialization/deserialization not just from the server side, but also even from the client side. Consider using [`actix-protobuf`](https://github.com/actix/actix-extras/tree/master/actix-protobuf) when there is more community support for integration and compatibility between the Protobuf data format, `actix-web`, `tokio-postgres` and PostgreSQL as a whole. Possible to optimize even further to using [HDF5](https://www.hdfgroup.org/solutions/hdf5/) (use [this](https://github.com/aldanor/hdf5-rust)), [MessagePack](https://msgpack.org/), [CBOR](https://cbor.io/), [FlatBuffers](https://google.github.io/flatbuffers/) or even all the way to [Cap'n Proto](https://capnproto.org/) (use [this](https://github.com/capnproto/capnproto-rust)). Other less-known serializers might not have enough community or compatibility support for our real-life application setup (such as [Apache Thrift](https://thrift.apache.org/), [`bitsery`](https://github.com/fraillt/bitsery), [YAS](https://github.com/niXman/yas) or [`zpp`](https://github.com/eyalz800/serializer)). A hand-written serializer might be the best, but it will take too much time to write (unfeasible due to the given tight timeframe). Might want to also convert the frontend client component to using `yew` (basically using `cargo-web`, WebAssembly, and `asm.js` via Emscripten) if there were to be no compromises on performance at all (but its questionable compatibility with Phaser needs to be investigated and enquired even further so as to not go into the realm of impossibility). Time taken for conversion between the specified selected data format and a human-readable format needs to be taken into consideration and accounted for as well (especially on the client side) lest the server suffers from unnecessary performance overhead issues.
 
@@ -309,7 +331,9 @@ The error handler is set up to avoid unwanted panics and the error message is pu
 
 
 
-## Acknowledgements
+## Acknowledgements <a name="acknowledgements"></a>
+
+[back to top](#top)
 
 [Credits](./images/credits.png) and props to these people who made this project possible to happen (especially during such a busy academic school term with a literal mountain of workload, sacrificing a lot of things):
 
