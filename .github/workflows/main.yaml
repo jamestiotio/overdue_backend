@@ -45,7 +45,7 @@ jobs:
       uses: actions-rs/cargo@v1
       with:
         command: tarpaulin
-        args: --verbose --release --all-features --tests --workspace --ignore-tests --out Xml -- --test-threads 1
+        args: --verbose --count --release --all-features --tests --workspace --ignore-tests --out Xml -- --test-threads 1
       env:
         RUST_LOG: actix_web=info,actix_server=info
         RUST_BACKTRACE: full
@@ -83,6 +83,7 @@ jobs:
             /root/.cargo/bin/cargo deb --target=$TARGET_TRIPLE;
             sudo dpkg -i target/$TARGET_TRIPLE/debian/overdue_backend_0.2.0_amd64.deb;
             sudo systemctl start overdue_backend.service;
+            logout;
           '
       - name: Delete & Cleanup SSH Credentials
         run: |
