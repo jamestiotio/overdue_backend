@@ -1,22 +1,21 @@
 // <main>
-use actix_web::{App, FromRequest, HttpServer, guard, http, middleware, web};
 use actix_cors::Cors;
-use actix_ratelimit::{RateLimiter, MemoryStore, MemoryStoreActor};
-use openssl::ssl::{SslAcceptor, SslAcceptorBuilder, SslFiletype, SslMethod};
-use slog::{Level, slog_info};
-use tokio_postgres::NoTls;
+use actix_ratelimit::{MemoryStore, MemoryStoreActor, RateLimiter};
+use actix_web::{guard, http, middleware, web, App, FromRequest, HttpServer};
 use dotenv::dotenv;
+use openssl::ssl::{SslAcceptor, SslAcceptorBuilder, SslFiletype, SslMethod};
+use slog::{slog_info, Level};
 use std::time::Duration;
 
 mod config;
 mod constants;
-mod handlers;
-mod models;
 mod db;
-mod errors;
-mod utils;
 mod defaults;
+mod errors;
+mod handlers;
 mod logging;
+mod models;
+mod utils;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -31,15 +30,18 @@ async fn main() -> std::io::Result<()> {
 
     // Set environment variables for logging (consider using slog_envlogger: https://crates.io/crates/slog-envlogger)
     // Might need https://crates.io/crates/slog-scope and https://crates.io/crates/slog-stdlog as additional dependencies
-    /*
-    std::env::set_var("RUST_LOG", "actix_web=info,actix_server=info");
-    std::env::set_var("RUST_BACKTRACE", "full");
-    */
+    // std::env::set_var("RUST_LOG", "actix_web=info,actix_server=info");
+    // std::env::set_var("RUST_BACKTRACE", "full");
 
     let logger = logging::configure_log();
     logging::set_global_level(Level::Trace);
 
-    slog_info!(logger, "Starting server at https://{}:{}/", config.server.host, config.server.port);
+    slog_info!(
+        logger,
+        "Starting server at https://{}:{}/",
+        config.server.host,
+        config.server.port
+    );
 
     let mut builder: SslAcceptorBuilder;
 
@@ -47,28 +49,48 @@ async fn main() -> std::io::Result<()> {
     if cfg!(debug_assertions) {
         builder = SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();
         builder
-        .set_private_key_file("tls/privkey.pem", SslFiletype::PEM)
-        .unwrap();
+            .set_private_key_file("tls/privkey.pem", SslFiletype::PEM)
+            .unwrap();
         builder.set_certificate_chain_file("tls/cert.pem").unwrap();
     }
     // Production mode
     else {
         builder = SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();
         builder
-        .set_private_key_file("/root/overdue_backend/tls/privkey.pem", SslFiletype::PEM)
-        .unwrap();
-        builder.set_certificate_chain_file("/root/overdue_backend/tls/fullchain.pem").unwrap();
+            .set_private_key_file("/root/overdue_backend/tls/privkey.pem", SslFiletype::PEM)
+            .unwrap();
+        builder
+            .set_certificate_chain_file("/root/overdue_backend/tls/fullchain.pem")
+            .unwrap();
     }
 
     HttpServer::new(move || {
         // Define Cross-Origin Resource Sharing policy
         let cors = Cors::default()
-              .allowed_origin(constants::GAME_CLIENT_URL_DOMAIN_ORIGIN)
-              .allowed_origin(constants::PUBLIC_FACING_GAME_CLIENT_URL)
-              .allowed_origin(constants::FRONT_DOMAIN)
-              .allowed_methods(vec!["GET", "POST"])
-              .allowed_headers(vec![http::header::CONTENT_TYPE, http::header::CONTENT_LENGTH, http::header::HOST, http::header::USER_AGENT, http::header::ORIGIN, http::header::CONNECTION, http::header::ACCEPT, http::header::ACCEPT_ENCODING, http::header::ACCEPT_LANGUAGE, http::header::ACCEPT_CHARSET, http::header::DNT, http::header::REFERER, http::header::UPGRADE, http::header::UPGRADE_INSECURE_REQUESTS, http::header::STRICT_TRANSPORT_SECURITY, http::header::CONTENT_SECURITY_POLICY, http::header::X_XSS_PROTECTION])
-              .max_age(constants::CORS_MAX_AGE_DURATION);
+            .allowed_origin(constants::GAME_CLIENT_URL_DOMAIN_ORIGIN)
+            .allowed_origin(constants::PUBLIC_FACING_GAME_CLIENT_URL)
+            .allowed_origin(constants::FRONT_DOMAIN)
+            .allowed_methods(vec!["GET", "POST"])
+            .allowed_headers(vec![
+                http::header::CONTENT_TYPE,
+                http::header::CONTENT_LENGTH,
+                http::header::HOST,
+                http::header::USER_AGENT,
+                http::header::ORIGIN,
+                http::header::CONNECTION,
+                http::header::ACCEPT,
+                http::header::ACCEPT_ENCODING,
+                http::header::ACCEPT_LANGUAGE,
+                http::header::ACCEPT_CHARSET,
+                http::header::DNT,
+                http::header::REFERER,
+                http::header::UPGRADE,
+                http::header::UPGRADE_INSECURE_REQUESTS,
+                http::header::STRICT_TRANSPORT_SECURITY,
+                http::header::CONTENT_SECURITY_POLICY,
+                http::header::X_XSS_PROTECTION,
+            ])
+            .max_age(constants::CORS_MAX_AGE_DURATION);
 
         // Use this permissive policy for debugging phase/development mode
         // let cors = Cors::permissive();
@@ -133,7 +155,10 @@ async fn main() -> std::io::Result<()> {
             .default_service(web::route().to(handlers::default_handler))
     })
     .keep_alive(constants::KEEP_ALIVE_DURATION)
-    .bind_openssl(format!("{}:{}", config.server.host, config.server.port), builder)?
+    .bind_openssl(
+        format!("{}:{}", config.server.host, config.server.port),
+        builder,
+    )?
     .run()
     .await
 }

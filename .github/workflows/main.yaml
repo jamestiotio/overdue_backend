@@ -26,17 +26,34 @@ jobs:
       uses: actions-rs/toolchain@v1
       with:
         toolchain: stable
-    - name: Run Tests
+        override: true
+    - name: Prepare Test Environment
       run: |
         sudo apt update
         sudo apt install -y build-essential postgresql-client
         mv .env.test .env
         psql -h localhost -p 5432 -U postgres postgres < database.sql
-        cargo test --all-features --verbose
+      env:
+        PGPASSWORD: postgres
+    - name: Install cargo-tarpaulin
+      uses: actions-rs/install@v0.1
+      with:
+        crate: cargo-tarpaulin
+        version: latest
+        use-tool-cache: false
+    - name: Run Tests
+      uses: actions-rs/cargo@v1
+      with:
+        command: tarpaulin
+        args: --verbose --release --all-features --tests --workspace --ignore-tests --out Xml -- --test-threads 1
       env:
         RUST_LOG: actix_web=info,actix_server=info
         RUST_BACKTRACE: full
-        PGPASSWORD: postgres
+    - name: Upload Test Coverage to codecov.io
+      uses: codecov/codecov-action@v1
+      with:
+        fail_ci_if_error: true
+        verbose: true
   deploy:
     runs-on: ubuntu-latest
     needs: build_and_test
@@ -55,7 +72,7 @@ jobs:
       # - https://unix.stackexchange.com/a/332533
       - name: Deploy Overdue Backend Server
         run: |
-          ssh -i ~/.ssh/overdue_rsa -o UserKnownHostsFile=~/.ssh/known_hosts ${{secrets.SSH_USERNAME}}@${{secrets.SSH_HOST}} '
+          ssh -i ~/.ssh/overdue_rsa -o UserKnownHostsFile=~/.ssh/known_hosts -o ServerAliveInterval=240 -o ServerAliveCountMax=15 ${{secrets.SSH_USERNAME}}@${{secrets.SSH_HOST}} '
             sudo systemctl stop overdue_backend.service;
             sudo dpkg --purge overdue_backend;
             cd overdue_backend && git fetch --all && git reset --hard origin/main && git clean -f -d && git pull origin main;
@@ -64,7 +81,7 @@ jobs:
             echo "${{secrets.TLS_PRIVATE_KEY}}" > tls/privkey.pem;
             export TARGET_TRIPLE=$(/root/.cargo/bin/rustc -vV | grep host | cut -d: -f2 | tr -d " ");
             /root/.cargo/bin/cargo deb --target=$TARGET_TRIPLE;
-            sudo dpkg -i target/$TARGET_TRIPLE/debian/overdue_backend_0.1.0_amd64.deb;
+            sudo dpkg -i target/$TARGET_TRIPLE/debian/overdue_backend_0.2.0_amd64.deb;
             sudo systemctl start overdue_backend.service;
           '
       - name: Delete & Cleanup SSH Credentials

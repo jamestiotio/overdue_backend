@@ -1,8 +1,7 @@
 use lazy_static::lazy_static;
-use std::collections::HashMap;
 use regex::Regex;
-use std::sync::atomic::AtomicUsize;
 use slog::Level;
+use std::{collections::HashMap, sync::atomic::AtomicUsize};
 
 // Define non-confidential constants here
 pub const MAX_SCORE: i32 = 4060;
@@ -24,10 +23,21 @@ pub const FRONT_DOMAIN: &str = "https://openhouse.sutd.edu.sg";
 pub const SERVER_HOST_URL: &str = "sutdoverdue.dev";
 
 lazy_static! {
-    pub static ref NAME_REGEX: Regex = Regex::new(r"^[a-zA-Z]{3}$").expect("error creating the name regex");
-    pub static ref DIFFICULTY_REGEX: Regex = Regex::new(r"^easy|normal|hard$").expect("error creating the difficulty regex");
-    pub static ref GENDER_REGEX: Regex = Regex::new(r"^[mMfF]{1}$").expect("error creating the gender regex");
-    pub static ref DIFFICULTY_MAP: HashMap<&'static str, i32> = [("easy", 0), ("normal", 1), ("hard", 2)].iter().cloned().collect();
-    pub static ref FLIPPED_DIFFICULTY_MAP: HashMap<i32, &'static str> = [(0, "easy"), (1, "normal"), (2, "hard")].iter().cloned().collect();
+    pub static ref NAME_REGEX: Regex =
+        Regex::new(r"^[a-zA-Z]{3}$").expect("error creating the name regex");
+    pub static ref DIFFICULTY_REGEX: Regex =
+        Regex::new(r"^easy|normal|hard$").expect("error creating the difficulty regex");
+    pub static ref GENDER_REGEX: Regex =
+        Regex::new(r"^[mMfF]{1}$").expect("error creating the gender regex");
+    pub static ref DIFFICULTY_MAP: HashMap<&'static str, i32> =
+        [("easy", 0), ("normal", 1), ("hard", 2)]
+            .iter()
+            .cloned()
+            .collect();
+    pub static ref FLIPPED_DIFFICULTY_MAP: HashMap<i32, &'static str> =
+        [(0, "easy"), (1, "normal"), (2, "hard")]
+            .iter()
+            .cloned()
+            .collect();
     pub static ref LEVEL: AtomicUsize = AtomicUsize::new(Level::Info.as_usize());
 }

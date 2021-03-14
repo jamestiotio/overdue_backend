@@ -1,16 +1,13 @@
-closure_block_indent_threshold = 0
 format_strings = true
 indent_style = "Block"
 max_width = 100
-merge_imports = true
+imports_granularity = "Crate"
 newline_style = "Unix"
 normalize_comments = true
 reorder_impl_items = true
 reorder_imports = true
-reorder_imported_names = true
 report_fixme = "Always"
 report_todo = "Always"
 use_field_init_shorthand = true
 use_try_shorthand = true
 wrap_comments = true
-write_mode = "Overwrite"

@@ -1,10 +1,9 @@
 // Define convenience facilities for logging purposes
-use slog::{Drain, Filter, Level, Logger, Record, o};
-use slog_term::{TermDecorator, FullFormat};
-use slog_async::{Async, OverflowStrategy};
-use std::io;
-use std::sync::atomic::Ordering;
 use chrono::Local;
+use slog::{o, Drain, Filter, Level, Logger, Record};
+use slog_async::{Async, OverflowStrategy};
+use slog_term::{FullFormat, TermDecorator};
+use std::{io, sync::atomic::Ordering};
 
 use crate::constants::LEVEL;
 
@@ -13,11 +12,7 @@ pub fn set_global_level(level: Level) {
 }
 
 fn timestamp_fn(io: &mut dyn io::Write) -> io::Result<()> {
-    write!(
-        io,
-        "{}",
-        Local::now().format("%Y-%m-%d %H:%M:%S%.3f")
-    )
+    write!(io, "{}", Local::now().format("%Y-%m-%d %H:%M:%S%.3f"))
 }
 
 pub fn configure_log() -> Logger {

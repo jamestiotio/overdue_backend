@@ -1,4 +1,4 @@
-use actix_web::{HttpRequest, HttpResponse, error, http::StatusCode};
+use actix_web::{error, http::StatusCode, HttpRequest, HttpResponse};
 use thiserror::Error;
 
 use crate::models::ErrorResponse;
@@ -27,7 +27,7 @@ impl CustomError {
             Self::BadRequest => "Bad Request".to_string(),
             Self::Forbidden => "Forbidden Error".to_string(),
             Self::DbError => "Database Error".to_string(),
-            Self::Internal => "Internal Server Error".to_string()
+            Self::Internal => "Internal Server Error".to_string(),
         }
     }
 }
@@ -91,7 +91,7 @@ pub fn query_error_handler(err: error::QueryPayloadError, _req: &HttpRequest) ->
 // Define unit tests for each error type
 #[cfg(test)]
 mod tests {
-    use actix_web::{ResponseError, http::StatusCode};
+    use actix_web::{http::StatusCode, ResponseError};
 
     use super::CustomError;
 

@@ -2,7 +2,7 @@
 # We use underscores instead of hyphens since Cargo will internally replace hyphens with underscores anyway (hyphens are disallowed as Cargo only support underscore identifiers)
 name = "overdue_backend"
 description = "Backend Database Server Code of the Overdue Game."
-version = "0.1.0"
+version = "0.2.0"
 authors = ["James Raphael Tiovalen <james_raphael@mymail.sutd.edu.sg>"]
 license = "MIT"
 readme = "README.md"
@@ -41,12 +41,12 @@ tokio-pg-mapper-derive = "0.1.4"
 deadpool-postgres = "0.5.0"
 tokio-postgres = { version = "0.5.5", features = ["with-serde_json-1"] }
 postgres-types = { version = "0.1.2", features = ["derive"] }
-openssl = { version = "0.10", features = ["vendored"] }
+openssl = { version = "0.10.33", features = ["vendored"] }
 native-tls = "0.2.7"
 postgres-native-tls = "0.5.0"
 dotenv = "0.15.0"
 config = "0.10.1"
-thiserror = "1.0.23"
+thiserror = "1.0.24"
 regex = "1.4.3"
 lazy_static = "1.4.0"
 paperclip = { version = "0.5.0", features = ["actix"] }
@@ -54,12 +54,16 @@ slog = "2.7.0"
 slog-term = "2.8.0"
 slog-async = "2.6.0"
 chrono = "0.4.19"
+actix-web-static-files = "3.0"
+
+[build-dependencies]
+actix-web-static-files = "3.0"
 
 [dev-dependencies]
 cargo-watch = "7.5.0"
 cargo-deb = "1.29.1"
 cargo-tarpaulin = "0.16.0"
-cargo-audit = "0.13.1"
+cargo-audit = "0.14.0"
 dotenv-linter = "3.0.0"
 tokio-test = "0.4.0"
 

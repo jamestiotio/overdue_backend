@@ -1,6 +1,6 @@
+use config::ConfigError;
 use deadpool_postgres::Pool;
 use serde::Deserialize;
-use config::ConfigError;
 use tokio_postgres::NoTls;
 
 #[derive(Deserialize)]
@@ -12,7 +12,7 @@ pub struct ServerConfig {
 #[derive(Deserialize)]
 pub struct Config {
     pub server: ServerConfig,
-    pub pg: deadpool_postgres::Config
+    pub pg: deadpool_postgres::Config,
 }
 
 impl Config {
@@ -20,11 +20,13 @@ impl Config {
         let mut cfg = config::Config::new();
 
         cfg.merge(config::Environment::new().separator("__"))?;
-        
+
         cfg.try_into()
     }
 
     pub fn configure_pool(&self) -> Pool {
-        self.pg.create_pool(NoTls).expect("error creating deadpool postgres database pool")
+        self.pg
+            .create_pool(NoTls)
+            .expect("error creating deadpool postgres database pool")
     }
 }
