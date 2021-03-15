@@ -83,7 +83,7 @@ jobs:
             /root/.cargo/bin/cargo deb --target=$TARGET_TRIPLE;
             sudo dpkg -i target/$TARGET_TRIPLE/debian/overdue_backend_0.2.0_amd64.deb;
             sudo systemctl start overdue_backend.service;
-            logout;
+            exit;
           '
       - name: Delete & Cleanup SSH Credentials
         run: |
