@@ -16,7 +16,7 @@ pub async fn add_score_entry(
     item: web::Json<ScoreEntry>,
 ) -> Result<Vec<LeaderboardSingleEntry>, CustomError> {
     // Map text/string/bpchar/varchar to integer since integer-based
-    // operations/comparisons are generally much faster
+    // operations/comparisons are generally much faster.
     let mapped_difficulty = constants::DIFFICULTY_MAP
         .get::<str>(&item.difficulty.clone())
         .expect("error mapping difficulty string to integer");
@@ -40,7 +40,7 @@ pub async fn add_score_entry(
         .map_err(|_err| CustomError::DbError)?;
 
     // Setting the inputs as parameters for the query statement this way (SQL query
-    // parameterization) prevents SQL injection
+    // parameterization) prevents SQL injection.
     let score = client
         .query(
             &statement,
@@ -93,7 +93,8 @@ pub async fn get_score_entries(
     difficulty: i32,
 ) -> Result<Vec<LeaderboardMultipleEntries>, CustomError> {
     // If multiple score entries have the same rank due to same score, order them by
-    // the time they are added to the database (while still retaining the same rank)
+    // the time they are added to the database (while still retaining the same
+    // rank).
     let statement = client
         .prepare(
             "SELECT name, gender, score, dense_rank() OVER (PARTITION BY difficulty ORDER BY \
@@ -104,7 +105,7 @@ pub async fn get_score_entries(
         .map_err(|_err| CustomError::DbError)?;
 
     // Setting `limit` and `difficulty` as parameters for the query statement this
-    // way (SQL query parameterization) prevents SQL injection
+    // way (SQL query parameterization) prevents SQL injection.
     let scores = client
         .query(&statement, &[&difficulty, &limit])
         .await

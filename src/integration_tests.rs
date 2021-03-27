@@ -1,7 +1,7 @@
 // NOTE: These integration tests are designed to be run
 // consecutively/separately/sequentially without any parallelism since they all
 // share the same PostgreSQL database state (remember to run these tests using
-// only a single one test thread)
+// only a single one test thread).
 use actix_rt;
 use actix_web::{dev::Body, guard, test, web, App, FromRequest};
 use dotenv::dotenv;
@@ -151,7 +151,7 @@ async fn test_get_materials_with_correct_header() {
     );
 
     // The order is the same as the order of the material entries/rows added to the
-    // material SQL table in the setup script
+    // material SQL table in the setup script.
     assert_eq!(
         &Body::from(
             json!([{"name":"jigsawAcrylic","quantity":0},{"name":"jigsawMetal","quantity":0},{"name":"jigsawWood","quantity":0},{"name":"drilledAcrylic","quantity":0},{"name":"drilledMetal","quantity":0},{"name":"drilledWood","quantity":0},{"name":"acrylicStrips","quantity":0},{"name":"woodStrips","quantity":0},{"name":"threeDPrint","quantity":0},{"name":"solderedPcb","quantity":0}])
@@ -516,7 +516,7 @@ async fn test_submit_score_with_no_host_header() {
                 .route(web::post().to(handlers::submit_score)),
         )
         .app_data(web::Json::<models::ScoreEntry>::configure(|cfg| {
-            // Limit size of the payload
+            // Limit size of the payload.
             cfg.limit(constants::INCOMING_SCORE_PAYLOAD_LIMIT)
                 .error_handler(errors::json_error_handler)
         }));
@@ -549,7 +549,7 @@ async fn test_submit_score_with_wrong_host_header() {
                 .route(web::post().to(handlers::submit_score)),
         )
         .app_data(web::Json::<models::ScoreEntry>::configure(|cfg| {
-            // Limit size of the payload
+            // Limit size of the payload.
             cfg.limit(constants::INCOMING_SCORE_PAYLOAD_LIMIT)
                 .error_handler(errors::json_error_handler)
         }));
@@ -583,7 +583,7 @@ async fn test_submit_score_with_empty_json() {
                 .route(web::post().to(handlers::submit_score)),
         )
         .app_data(web::Json::<models::ScoreEntry>::configure(|cfg| {
-            // Limit size of the payload
+            // Limit size of the payload.
             cfg.limit(constants::INCOMING_SCORE_PAYLOAD_LIMIT)
                 .error_handler(errors::json_error_handler)
         }));
@@ -617,7 +617,7 @@ async fn test_submit_score_with_malformed_json() {
                 .route(web::post().to(handlers::submit_score)),
         )
         .app_data(web::Json::<models::ScoreEntry>::configure(|cfg| {
-            // Limit size of the payload
+            // Limit size of the payload.
             cfg.limit(constants::INCOMING_SCORE_PAYLOAD_LIMIT)
                 .error_handler(errors::json_error_handler)
         }));
@@ -651,7 +651,7 @@ async fn test_submit_score_with_invalid_json() {
                 .route(web::post().to(handlers::submit_score)),
         )
         .app_data(web::Json::<models::ScoreEntry>::configure(|cfg| {
-            // Limit size of the payload
+            // Limit size of the payload.
             cfg.limit(constants::INCOMING_SCORE_PAYLOAD_LIMIT)
                 .error_handler(errors::json_error_handler)
         }));

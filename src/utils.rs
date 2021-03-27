@@ -33,18 +33,18 @@ pub async fn check_if_materials_total_value_sum_up_to_score(
 ) -> Result<bool, CustomError> {
     let mut sum: i32 = 0;
 
-    // Ensure that materials array is not strangely constructed/parsed
+    // Ensure that materials array is not strangely constructed/parsed.
     if (materials.is_empty() && materials.len() > 0) || (materials.capacity() < materials.len()) {
         return Ok(false);
     }
 
-    // Validate that length of materials vector does not exceed the values vector
+    // Validate that length of materials vector does not exceed the values vector.
     if materials.len() > values.len() {
         return Ok(false);
     }
 
     // Check that materials vector does not contain any materials not specified in
-    // the currently-existing material names in the database
+    // the currently-existing material names in the database.
     for material in materials.iter() {
         if !(&values).iter().any(|value| value.name == material.name) {
             return Ok(false);
@@ -52,8 +52,8 @@ pub async fn check_if_materials_total_value_sum_up_to_score(
     }
 
     // Check that materials vector does not contain any duplicate items (i.e.,
-    // multiple material entries with the same name) This is an attempt to avoid
-    // potential/possible race conditions
+    // multiple material entries with the same name). This is an attempt to avoid
+    // potential/possible race conditions.
     let mut already_seen = vec![];
     for material in materials.iter() {
         match already_seen.contains(&material.name) {
@@ -62,7 +62,7 @@ pub async fn check_if_materials_total_value_sum_up_to_score(
         }
     }
 
-    // Prevent submission of scores with non-zero bonuses but with no materials
+    // Prevent submission of scores with non-zero bonuses but with no materials.
     if materials.is_empty() && bonus > 0 {
         return Ok(false);
     }
@@ -72,9 +72,9 @@ pub async fn check_if_materials_total_value_sum_up_to_score(
     for material in materials.iter() {
         // Nested inner loop is (generally) better/less expensive in terms of
         // performance compared to keep communicating with and hitting the database
-        // (especially for our case) Exceptions and special cases exist, of
+        // (especially for our case). Exceptions and special cases exist, of
         // course, but for our case, we will follow the general consensus of best
-        // practices
+        // practices.
         for value in values.iter() {
             if material.name == value.name {
                 sum += value.value * material.quantity;
@@ -89,12 +89,12 @@ pub async fn check_if_materials_total_value_sum_up_to_score(
 // This implementation of dynamically constructing the SQL query on the Rust
 // side works more performantly compared to a fixed for loop of SQL statements
 // (execution time is much faster for a single bigger nested query compared to
-// multiple smaller queries)
+// multiple smaller queries).
 pub async fn add_materials_to_aggregate(
     client: &Client,
     materials: Vec<MaterialEntry>,
 ) -> Result<bool, CustomError> {
-    // Initialize mutable SQL statement to be used for database update (variable name courtesy of Filbert - https://github.com/FolkLoreee)
+    // Initialize mutable SQL statement to be used for database update (variable name courtesy of Filbert - https://github.com/FolkLoreee).
     let mut nomnom: String =
         "UPDATE material AS m SET quantity = c.quantity FROM (VALUES".to_string();
 
@@ -110,11 +110,12 @@ pub async fn add_materials_to_aggregate(
         );
     }
 
+    // Remove the last final comma character.
     nomnom.pop();
 
     nomnom.push_str(") AS c(name, quantity) WHERE c.name = m.name");
 
-    // Pre-allocate the capacity limit
+    // Pre-allocate the capacity limit.
     let mut params: Vec<&(dyn tokio_postgres::types::ToSql + Sync)> =
         Vec::with_capacity(materials.len() * 2);
 
@@ -123,14 +124,14 @@ pub async fn add_materials_to_aggregate(
         params.push(&material.quantity);
     }
 
-    // Prepare actual SQL statement
+    // Prepare actual SQL statement.
     let statement = client
         .prepare(&nomnom)
         .await
         .map_err(|_err| CustomError::DbError)?;
 
     // Setting the inputs as parameters for the query statement this way (SQL query
-    // parameterization) prevents SQL injection
+    // parameterization) prevents SQL injection.
     let result = client
         .query(&statement, &params[..])
         .await
@@ -140,13 +141,13 @@ pub async fn add_materials_to_aggregate(
     Ok(result)
 }
 
-// Define unit tests for the payload validation logic
+// Define unit tests for the payload validation logic.
 #[cfg(test)]
 mod tests {
     use super::check_if_materials_total_value_sum_up_to_score;
     use crate::models::{MaterialEntry, MaterialValueEntry};
 
-    // Define macro to await async function to return result
+    // Define macro to await async function to return result.
     macro_rules! aw {
         ($e:expr) => {
             tokio_test::block_on($e)

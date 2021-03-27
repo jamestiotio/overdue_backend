@@ -1,4 +1,4 @@
-// Define convenience facilities for logging purposes
+// Define convenience facilities for logging purposes.
 use chrono::Local;
 use slog::{o, Drain, Filter, Level, Logger, Record};
 use slog_async::{Async, OverflowStrategy};
@@ -16,7 +16,7 @@ fn timestamp_fn(io: &mut dyn io::Write) -> io::Result<()> {
 }
 
 pub fn configure_log() -> Logger {
-    // Set logging settings for debugging purposes
+    // Set logging settings for debugging purposes.
     let decorator = TermDecorator::new().build();
     let drain = FullFormat::new(decorator)
         .use_custom_timestamp(timestamp_fn)

@@ -30,7 +30,7 @@ pub struct ScoreEntry {
     #[validate(regex = "constants::GENDER_REGEX")]
     pub gender: String,
     // Only emails that satisfy the HTML5 regex specs standard will be accepted (some esoteric
-    // valid emails will not be accepted)
+    // valid emails will not be accepted).
     #[validate(email)]
     pub email: String,
     #[validate(regex = "constants::DIFFICULTY_REGEX")]
@@ -85,7 +85,7 @@ pub struct LeaderboardMultipleEntries {
     pub rank: i64,
 }
 
-// Model for error message
+// Model for error message.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ErrorResponse {
     pub code: u16,
@@ -93,7 +93,7 @@ pub struct ErrorResponse {
     pub message: String,
 }
 
-// Model for logging
+// Model for logging.
 #[derive(Clone)]
 pub struct AppState {
     pub pool: Pool,

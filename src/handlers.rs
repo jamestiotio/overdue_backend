@@ -24,18 +24,18 @@ pub fn log_error(log: Logger) -> impl Fn(CustomError) -> CustomError {
     }
 }
 
-// This handler uses JSON extractor with limit
+// This handler uses JSON extractor with limit.
 pub async fn submit_score(
     state: web::Data<models::AppState>,
     item: web::Json<models::ScoreEntry>,
 ) -> Result<impl Responder, CustomError> {
-    // Validate JSON input payload
+    // Validate JSON input payload.
     match item.validate() {
         Ok(_) => (),
         Err(_e) => return Err(CustomError::ValidationError),
     }
 
-    // Validate each material
+    // Validate each material.
     if !item.materials.is_empty() {
         for material in item.materials.clone().iter() {
             match material.validate() {
@@ -49,7 +49,7 @@ pub async fn submit_score(
 
     let client: Client = get_client(state.pool.clone(), log.clone()).await?;
 
-    // By default, return error
+    // By default, return error.
     let mut result: Result<Vec<models::LeaderboardSingleEntry>, CustomError> =
         Err(CustomError::Internal);
 
@@ -57,7 +57,8 @@ pub async fn submit_score(
         .await
         .map_err(|_err| CustomError::DbError)?;
 
-    // Pass the fetched material names from database for input verification purposes
+    // Pass the fetched material names from database for input verification
+    // purposes.
     let allowed_to_add_score: bool = utils::check_if_materials_total_value_sum_up_to_score(
         item.score,
         item.materials.clone(),
@@ -68,7 +69,7 @@ pub async fn submit_score(
     .map_err(|_err| CustomError::ValidationError)?;
 
     if allowed_to_add_score {
-        // Do not need to add any materials to aggregate if material vector is empty
+        // Do not need to add any materials to aggregate if material vector is empty.
         let added_to_materials: bool = if !item.materials.is_empty() {
             utils::add_materials_to_aggregate(&client, item.materials.clone())
                 .await
@@ -77,7 +78,7 @@ pub async fn submit_score(
             true
         };
 
-        // Only add score entry if there are materials added to the material table
+        // Only add score entry if there are materials added to the material table.
         if added_to_materials {
             result = Ok(db::add_score_entry(&client, item)
                 .await
@@ -88,7 +89,7 @@ pub async fn submit_score(
     }
 
     // Echo JSON response partially back if everything is okay (follow standard
-    // military communication procedure, protocol & etiquette)
+    // military communication procedure, protocol & etiquette).
     result
         .map(|score| {
             HttpResponse::Ok()
@@ -114,7 +115,7 @@ pub async fn get_leaderboard(
     let client: Client = get_client(state.pool.clone(), log.clone()).await?;
 
     // Map text/string/bpchar/varchar to integer since integer-based
-    // operations/comparisons are generally much faster
+    // operations/comparisons are generally much faster.
     let mapped_difficulty = constants::DIFFICULTY_MAP
         .get::<str>(&query.difficulty.clone())
         .expect("error mapping difficulty string to integer");
@@ -167,7 +168,7 @@ pub async fn fortune_cookie_handler() -> Result<impl Responder, std::io::Error> 
         fortune = "No fortune cookies on Windows. 😔".to_string();
     } else {
         // Need to run `sudo apt install fortune` first since this command is not
-        // built-in on Ubuntu
+        // built-in on Ubuntu.
         let output = Command::new("/usr/games/fortune")
             .arg("-s")
             .output()
@@ -197,11 +198,11 @@ pub async fn fortune_cookie_handler() -> Result<impl Responder, std::io::Error> 
 }
 
 pub async fn favicon_handler() -> Result<fs::NamedFile, std::io::Error> {
-    // Development mode
+    // Development mode.
     #[cfg(debug_assertions)]
     return Ok(fs::NamedFile::open("static/favicon.ico")?.set_status_code(StatusCode::OK));
 
-    // Production mode
+    // Production mode.
     #[cfg(not(debug_assertions))]
     return Ok(
         fs::NamedFile::open("/root/overdue_backend/static/favicon.ico")?
@@ -210,13 +211,13 @@ pub async fn favicon_handler() -> Result<fs::NamedFile, std::io::Error> {
 }
 
 pub async fn default_handler() -> Result<fs::NamedFile, std::io::Error> {
-    // Development mode
+    // Development mode.
     #[cfg(debug_assertions)]
     return Ok(
         fs::NamedFile::open("static/detected_cheater.png")?.set_status_code(StatusCode::NOT_FOUND)
     );
 
-    // Production mode
+    // Production mode.
     #[cfg(not(debug_assertions))]
     return Ok(
         fs::NamedFile::open("/root/overdue_backend/static/detected_cheater.png")?

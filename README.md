@@ -58,10 +58,20 @@ Developing this server code prototype was quite enjoyable, even though the timel
 
     ```cmd
     > rustup self update
+    > rustup default stable
     > rustup component add clippy
     ```
-    
-2. If you are on Ubuntu/Linux or MacOS, ensure that you have the usual C/C++ toolchain, OpenSSL and PostgreSQL installed. Follow the instructions [here](https://www.postgresql.org/download/) as per normal, run these commands:
+
+2. The code can be formatted by using the nightly cargo version and rustfmt:
+
+    ```cmd
+    > rustup self update
+    > rustup default nightly
+    > rustup component add rustfmt --toolchain nightly
+    > cargo +nightly fmt
+    ```
+
+3. If you are on Ubuntu/Linux or MacOS, ensure that you have the usual C/C++ toolchain, OpenSSL and PostgreSQL installed. Follow the instructions [here](https://www.postgresql.org/download/) as per normal, run these commands:
 
     ```console
     $ sudo apt install build-essential checkinstall zlib1g-dev openssl libssl-dev postgresql-13 postgresql-client-13 libpq-dev pgadmin4
@@ -82,7 +92,7 @@ Developing this server code prototype was quite enjoyable, even though the timel
 
     > Portable versions of `cmake`, `7zip`, `nuget` and `powershell-core` will be automatically downloaded and extracted by `vcpkg`.
 
-3. Ensure that only access by `localhost` is allowed for PostgreSQL. The following `pg_hba.conf` configuration should be sufficient:
+4. Ensure that only access by `localhost` is allowed for PostgreSQL. The following `pg_hba.conf` configuration should be sufficient:
 
     ```
     # TYPE  DATABASE        USER            ADDRESS                 METHOD
@@ -92,7 +102,7 @@ Developing this server code prototype was quite enjoyable, even though the timel
     host    all             all           0.0.0.0/0                 reject
     ```
 
-4. Alternatively, you can set up the PostgreSQL database service by using Docker so as to isolate the container's network from the host's network. Install [Docker Engine](https://docs.docker.com/engine/install/), [Docker Compose](https://docs.docker.com/compose/install/) and [PostgreSQL](https://www.postgresql.org/download/) first. Then, run this command:
+5. Alternatively, you can set up the PostgreSQL database service by using Docker so as to isolate the container's network from the host's network. Install [Docker Engine](https://docs.docker.com/engine/install/), [Docker Compose](https://docs.docker.com/compose/install/) and [PostgreSQL](https://www.postgresql.org/download/) first. Then, run this command:
 
     ```cmd
     > docker-compose up -d
@@ -104,13 +114,13 @@ Developing this server code prototype was quite enjoyable, even though the timel
     $ sudo systemctl stop postgresql.service
     ```
 
-5. To set up the database, run this command:
+6. To set up the database, run this command:
 
     ```cmd
     > psql -h 127.0.0.1 -p 5432 -U overdue overdue < database.sql
     ```
 
-6. Enable security features for the backend server code. There are two things: firstly, follow the instructions [here](https://letsencrypt.org/getting-started/) and [here](https://certbot.eff.org/instructions) to generate the SSL certificate for HTTPS support (at least TLS v1.2) using Certbot with Let's Encrypt as its Certificate Authority and put the certificate into the appropriate folder directory (this would require a domain name for the backend server so go and obtain one from your nearest domain name registrar). For our case, we utilize Namecheap as our domain name registrar (remember to enable WhoisGuard, PremiumDNS and DNSSEC). Add the corresponding DNS Host Records:
+7. Enable security features for the backend server code. There are two things: firstly, follow the instructions [here](https://letsencrypt.org/getting-started/) and [here](https://certbot.eff.org/instructions) to generate the SSL certificate for HTTPS support (at least TLS v1.2) using Certbot with Let's Encrypt as its Certificate Authority and put the certificate into the appropriate folder directory (this would require a domain name for the backend server so go and obtain one from your nearest domain name registrar). For our case, we utilize Namecheap as our domain name registrar (remember to enable WhoisGuard, PremiumDNS and DNSSEC). Add the corresponding DNS Host Records:
 
     | Type | Host | Value | TTL |
     | --- | --- | --- | --- |
@@ -145,9 +155,9 @@ Developing this server code prototype was quite enjoyable, even though the timel
 
     For the Postgres database server, since we cannot generate a TLS certificate for `localhost` using Let's Encrypt (more information [here](https://letsencrypt.org/docs/certificates-for-localhost/)), we can use either another self-signed certificate or use [`minica`](https://github.com/jsha/minica) (re-using the aforegenerated SSL certificate for our public Internet-facing backend server domain is definitely out of the question since the local machine's DNS configuration would need to be configured to have the same domain name as the server until it is *almost out of whack*).
 
-7. Optionally, follow [this tutorial](https://www.digitalocean.com/community/tutorials/how-to-securely-manage-secrets-with-hashicorp-vault-on-ubuntu-16-04) to set up HashiCorp Vault for the DigitalOcean VPS for the purpose of storing and accessing/reading environment variables and credentials securely. Remember to use TLS certificates, enable Consul encryption and enable ACLs to make it production-ready. Alternatively, set the appropriate environment variables and credentials for the backend app server (such as the TLS certificates and the PostgreSQL database credentials).
+8. Optionally, follow [this tutorial](https://www.digitalocean.com/community/tutorials/how-to-securely-manage-secrets-with-hashicorp-vault-on-ubuntu-16-04) to set up HashiCorp Vault for the DigitalOcean VPS for the purpose of storing and accessing/reading environment variables and credentials securely. Remember to use TLS certificates, enable Consul encryption and enable ACLs to make it production-ready. Alternatively, set the appropriate environment variables and credentials for the backend app server (such as the TLS certificates and the PostgreSQL database credentials).
 
-8. For linting and testing, run these commands (use `cargo-tarpaulin` to get the code lines test coverage percentage):
+9. For linting and testing, run these commands (use `cargo-tarpaulin` to get the code lines test coverage percentage):
 
     ```cmd
     > cargo clippy
@@ -155,7 +165,7 @@ Developing this server code prototype was quite enjoyable, even though the timel
     > cargo tarpaulin --verbose --release --all-features --all-targets --tests --workspace --out Xml -- --test-threads=1
     ```
 
-9. For development, run these commands:
+10. For development, run these commands:
 
     ```cmd
     > cd overdue_backend\
@@ -166,7 +176,7 @@ Developing this server code prototype was quite enjoyable, even though the timel
 
     NOTE: You might need to change the `SERVER__PORT` environment variable in the `.env` file to `8443` instead of `443` if you encounter some permission denied issue on your local machine during development.
 
-10. For release, you can install the binary by running `cargo install --bin overdue_backend --path .` or by running these commands (by default, the executable is placed in the `./target/release` folder):
+11. For release, you can install the binary by running `cargo install --bin overdue_backend --path .` or by running these commands (by default, the executable is placed in the `./target/release` folder):
 
     ```cmd
     > cd overdue_backend\
@@ -177,7 +187,7 @@ Developing this server code prototype was quite enjoyable, even though the timel
 
     We are using GitHub Actions for Continuous Integration and Continuous Delivery. Alternatively, you can follow this [tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-drone-on-ubuntu-20-04) to run tests using Drone CI. We are using SSH as our method of deployment since the alternative would be by using the [`doctl`](https://github.com/digitalocean/action-doctl) CLI, which is sort of more dangerous/risky in terms of security/safety since instead of potentially "exposing" the SSH key to a single Droplet instance, we might "expose" a whole DigitalOcean PAT API key with read and write permissions in my DigitalOcean account (with the tradeoff of being slightly less robust due to the hardcoded absolute paths to the executable binaries). As such, please be reminded to specify the specific SSH `id_rsa` private keyfile with no passphrase (by using `-i ~/.ssh/id_rsa`), specify the specific SSH `known_hosts` file (by using `-o UserKnownHostsFile=~/.ssh/known_hosts` to avoid the warning of non-establishable ECDSA key fingerprint authenticity of the host) and configure the `$PATH` environment variables accordingly so as to be able to properly run any executable binaries since SSH is a non-interactive shell (perhaps by using absolute paths or by installing the needed executables using the official Ubuntu's package manager `apt`). To allow Git to checkout, clone, pull and merge this repository, we utilize a [read-only deploy key](https://github.blog/2015-06-16-read-only-deploy-keys/) installed on the target server machine (instructions specified [here](https://docs.github.com/en/developers/overview/managing-deploy-keys#deploy-keys)). Before deployment, ensure that the DigitalOcean Droplet has enough memory (RAM) since if not, it will run out of memory (OOM) and will fail to compile and hence deploy as the scheduler in the system/kernel will send a `SIGKILL` signal to the `rustc` compiler if it takes up too much memory. Simply re-running the workflow until it achieves a successful deployment should solve this issue.
 
-11. As when the server is live during production, if the tables' properties need to be altered for some whatever reason, we can do so by running the `ALTER TABLE` SQL command (refer to the [documentation](https://www.postgresql.org/docs/current/sql-altertable.html) for more information).
+12. As when the server is live during production, if the tables' properties need to be altered for some whatever reason, we can do so by running the `ALTER TABLE` SQL command (refer to the [documentation](https://www.postgresql.org/docs/current/sql-altertable.html) for more information).
 
     We can count the number of entries/games played and unique emails submitted to the leaderboard respectively by running this command:
 
@@ -204,7 +214,7 @@ Developing this server code prototype was quite enjoyable, even though the timel
     $ for i in {0..2}; do (echo "SELECT MIN(subquery.id) AS id, subquery.email, subquery.difficulty, MIN(subquery.rank) AS rank FROM (SELECT id, email, difficulty, dense_rank() OVER (PARTITION BY difficulty ORDER BY score DESC) rank FROM leaderboard WHERE difficulty = $i) subquery GROUP BY subquery.email, subquery.difficulty ORDER BY rank ASC FETCH FIRST 3 ROWS ONLY;" | psql -h 127.0.0.1 -p 5432 -U overdue -d overdue --csv; echo "") >> vouchers.csv; done
     ```
 
-    To dump the entire database onto CSV files to be exported and backed up onto other platforms or used on other Droplets or instances of Postgres or SQL databases, we can run this command:
+    To dump the entire database onto CSV files to be exported and backed up onto other platforms or used on other Droplets or instances of Postgres or SQL databases, we can run these commands:
 
     ```console
     $ psql -h 127.0.0.1 -p 5432 -U overdue -d overdue -c 'SELECT * FROM leaderboard' --csv > leaderboard.csv

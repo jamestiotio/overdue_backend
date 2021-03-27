@@ -88,7 +88,7 @@ pub fn query_error_handler(err: error::QueryPayloadError, _req: &HttpRequest) ->
     error::InternalError::from_response(err, res).into()
 }
 
-// Define unit tests for each error type
+// Define unit tests for each error type.
 #[cfg(test)]
 mod tests {
     use actix_web::{http::StatusCode, ResponseError};

@@ -3,7 +3,7 @@ use regex::Regex;
 use slog::Level;
 use std::{collections::HashMap, sync::atomic::AtomicUsize};
 
-// Define non-confidential constants here
+// Define non-confidential constants here.
 pub const MAX_SCORE: i32 = 4060;
 pub const MIN_SCORE: i32 = 0;
 pub const MAX_MATERIALS: i32 = 10;

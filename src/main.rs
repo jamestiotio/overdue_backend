@@ -25,11 +25,11 @@ async fn main() -> std::io::Result<()> {
 
     let pool = config.configure_pool();
 
-    // Initialize store
+    // Initialize store.
     let store = MemoryStore::new();
 
-    // Set environment variables for logging (consider using slog_envlogger: https://crates.io/crates/slog-envlogger)
-    // Might need https://crates.io/crates/slog-scope and https://crates.io/crates/slog-stdlog as additional dependencies
+    // Set environment variables for logging (consider using slog_envlogger: https://crates.io/crates/slog-envlogger).
+    // Might need https://crates.io/crates/slog-scope and https://crates.io/crates/slog-stdlog as additional dependencies.
     // std::env::set_var("RUST_LOG", "actix_web=info,actix_server=info");
     // std::env::set_var("RUST_BACKTRACE", "full");
 
@@ -45,7 +45,7 @@ async fn main() -> std::io::Result<()> {
 
     let mut builder: SslAcceptorBuilder;
 
-    // Development mode
+    // Development mode.
     if cfg!(debug_assertions) {
         builder = SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();
         builder
@@ -53,7 +53,7 @@ async fn main() -> std::io::Result<()> {
             .unwrap();
         builder.set_certificate_chain_file("tls/cert.pem").unwrap();
     }
-    // Production mode
+    // Production mode.
     else {
         builder = SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();
         builder
@@ -65,7 +65,7 @@ async fn main() -> std::io::Result<()> {
     }
 
     HttpServer::new(move || {
-        // Define Cross-Origin Resource Sharing policy
+        // Define Cross-Origin Resource Sharing policy.
         let cors = Cors::default()
             .allowed_origin(constants::GAME_CLIENT_URL_DOMAIN_ORIGIN)
             .allowed_origin(constants::PUBLIC_FACING_GAME_CLIENT_URL)
@@ -92,15 +92,15 @@ async fn main() -> std::io::Result<()> {
             ])
             .max_age(constants::CORS_MAX_AGE_DURATION);
 
-        // Use this permissive policy for debugging phase/development mode
+        // Use this permissive policy for debugging phase/development mode.
         // let cors = Cors::permissive();
 
         App::new()
             .wrap(middleware::Compress::default())
-            // Enable logging
+            // Enable logging.
             // .wrap(middleware::Logger::default())
             .wrap(cors)
-            // Register the middleware which allows for a maximum of 60 requests per minute per client based on IP address
+            // Register the middleware which allows for a maximum of 60 requests per minute per client based on IP address.
             .wrap(
                 RateLimiter::new(
                 MemoryStoreActor::from(store.clone()).start())
@@ -111,7 +111,7 @@ async fn main() -> std::io::Result<()> {
                 pool: pool.clone(),
                 log: logger.clone()
             })
-            // Define all of the available endpoints
+            // Define all of the available endpoints.
             .service(
                 web::resource("/submit_score{_:/?}")
                 .data(web::JsonConfig::default().limit(constants::INCOMING_SCORE_PAYLOAD_LIMIT))
@@ -119,7 +119,7 @@ async fn main() -> std::io::Result<()> {
                 .route(web::post().to(handlers::submit_score)))
                 .app_data(
                     web::Json::<models::ScoreEntry>::configure(|cfg| {
-                        // Limit size of the payload
+                        // Limit size of the payload.
                         cfg.limit(constants::INCOMING_SCORE_PAYLOAD_LIMIT)
                            .error_handler(errors::json_error_handler)
                     })
@@ -137,7 +137,7 @@ async fn main() -> std::io::Result<()> {
                 web::resource("/get_materials{_:/?}")
                 .guard(guard::Host(constants::SERVER_HOST_URL))
                 .route(web::get().to(handlers::get_materials)))
-            // Define easter egg endpoints
+            // Define easter egg endpoints.
             .service(
                 web::resource("/vsauce{_:/?}")
                 .guard(guard::Host(constants::SERVER_HOST_URL))
@@ -146,12 +146,12 @@ async fn main() -> std::io::Result<()> {
                 web::resource("/fortune{_:/?}")
                 .guard(guard::Host(constants::SERVER_HOST_URL))
                 .route(web::get().to(handlers::fortune_cookie_handler)))
-            // Serve favicon image
+            // Serve favicon image.
             .service(
                 web::resource("/favicon.ico")
                 .guard(guard::Host(constants::SERVER_HOST_URL))
                 .route(web::get().to(handlers::favicon_handler)))
-            // Default 404 handler
+            // Default 404 handler.
             .default_service(web::route().to(handlers::default_handler))
     })
     .keep_alive(constants::KEEP_ALIVE_DURATION)

@@ -1,5 +1,5 @@
 // Define default values here for optional query parameters and optional JSON
-// model payload keys
+// model payload keys.
 
 pub fn default_max_entries() -> i64 {
     10
