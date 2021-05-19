@@ -10,7 +10,7 @@ Backend Database Server Code of `Overdue!` (SUTD Fablab ISTD Game) for Open Hous
 
 Game obviously inspired by [Overcooked!](https://www.team17.com/games/overcooked/).
 
-Frontend code repository for the [Phaser](https://phaser.io/)-based public-facing web game client is accessible [here](https://github.com/nicolefranc/sutd-fablab-game) (might be private).
+Frontend code repository for the [Phaser](https://phaser.io/)-based public-facing web game client is accessible [here](https://github.com/nicolefranc/sutd-fablab-game).
 
 While they are still up, the front-facing frontend game client can be accessed [here](https://sutd-fablab-game.netlify.app/) (the public-facing one can be seen [here](https://overdue.sutd.edu.sg/)) and the backend game server can be accessed [here](https://sutdoverdue.dev/). Our SUTD Open House subpage/category is located [here](https://openhouse.sutd.edu.sg/overdue/).
 
@@ -376,5 +376,4 @@ Cheers!
 <p align="center"><i>Crafted, designed and built with ❤️ by <a href="https://github.com/jamestiotio">@jamestiotio</a> in Singapore. (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧</i></p>
 
 <p align="center"><a href="https://istd.sutd.edu.sg/"><img alt="ISTD Logo" height="150px" src="./images/istd-logo.png"></a><a href="https://www.sutd.edu.sg/"><img alt="SUTD Logo" height="150px" src="./images/sutd-logo.png"></a></p>
-
 
