@@ -77,8 +77,7 @@ jobs:
             sudo dpkg --purge overdue_backend;
             cd overdue_backend && git fetch --all && git reset --hard origin/main && git clean -f -d && git pull origin main;
             sudo rm -rf target;
-            echo "${{secrets.TLS_FULLCHAIN_CERTIFICATE}}" > tls/fullchain.pem;
-            echo "${{secrets.TLS_PRIVATE_KEY}}" > tls/privkey.pem;
+            cp -p /etc/letsencrypt/live/${{secrets.SERVER_DOMAIN_NAME}}/fullchain.pem /etc/letsencrypt/live/${{secrets.SERVER_DOMAIN_NAME}}/privkey.pem tls/;
             export TARGET_TRIPLE=$(/root/.cargo/bin/rustc -vV | grep host | cut -d: -f2 | tr -d " ");
             /root/.cargo/bin/cargo deb --target=$TARGET_TRIPLE;
             sudo dpkg -i target/$TARGET_TRIPLE/debian/overdue_backend_0.2.0_amd64.deb;
