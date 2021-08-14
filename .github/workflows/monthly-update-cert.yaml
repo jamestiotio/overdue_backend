@@ -1,0 +1,36 @@
+name: Monthly TLS Certificate Update
+on:
+  schedule:
+    # Maximum timing window between expired and new certificate is technically 30 days (instead of "monthly") due to Let's Encrypt's certificate renewal policy
+    - cron: '0 0 */30 * *'
+jobs:
+  monthly_update_cert:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup & Configure SSH
+        run: |
+          sudo apt install -y ssh
+          mkdir -p ~/.ssh/
+          echo "${{secrets.SSH_KEY}}" > ~/.ssh/overdue_rsa
+          chmod 600 ~/.ssh/overdue_rsa
+          ssh-keyscan "${{secrets.SSH_HOST}}" >> ~/.ssh/known_hosts
+      # Recompile certificate in binary and reload certificate in memory, if necessary
+      - name: Update TLS Certificate to Latest Version
+        run: |
+          ssh -i ~/.ssh/overdue_rsa -o UserKnownHostsFile=~/.ssh/known_hosts -o ServerAliveInterval=240 -o ServerAliveCountMax=15 ${{secrets.SSH_USERNAME}}@${{secrets.SSH_HOST}} '
+            sudo systemctl stop overdue_backend.service;
+            sudo dpkg --purge overdue_backend;
+            cd overdue_backend;
+            sudo rm -rf target;
+            cp -p /etc/letsencrypt/live/${{secrets.SERVER_DOMAIN_NAME}}/fullchain.pem /etc/letsencrypt/live/${{secrets.SERVER_DOMAIN_NAME}}/privkey.pem tls/;
+            export TARGET_TRIPLE=$(/root/.cargo/bin/rustc -vV | grep host | cut -d: -f2 | tr -d " ");
+            /root/.cargo/bin/cargo deb --target=$TARGET_TRIPLE;
+            sudo dpkg -i target/$TARGET_TRIPLE/debian/overdue_backend_0.2.0_amd64.deb;
+            sudo systemctl enable overdue_backend.service;
+            sudo systemctl start overdue_backend.service;
+            exit;
+          '
+      - name: Delete & Cleanup SSH Credentials
+        run: |
+          sudo rm -rf ~/.ssh/overdue_rsa
+          sudo rm -rf ~/.ssh/known_hosts
