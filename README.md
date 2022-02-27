@@ -54,6 +54,8 @@ Developing this server code prototype was quite enjoyable, even though the timel
 
 [back to top](#top)
 
+> It is recommended to always use [cargo-crev](https://github.com/crev-dev/cargo-crev) to verify the trustworthiness of each of your dependencies, including this one.
+
 1. Download and install Rust with its toolchain (including `rustc`, `cargo` and `rustup`) from [here](https://www.rust-lang.org/tools/install). After that, optionally run these commands to use Clippy:
 
     ```cmd
