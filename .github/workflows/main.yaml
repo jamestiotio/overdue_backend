@@ -86,6 +86,7 @@ jobs:
             exit;
           '
       - name: Delete & Cleanup SSH Credentials
+        if: always()
         run: |
           sudo rm -rf ~/.ssh/overdue_rsa
           sudo rm -rf ~/.ssh/known_hosts
