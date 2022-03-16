@@ -7,7 +7,7 @@ authors = ["James Raphael Tiovalen <james_raphael@mymail.sutd.edu.sg>"]
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/jamestiotio/overdue_backend"
-edition = "2018"
+edition = "2021"
 keywords = ["backend", "server", "api", "endpoint", "endpoints", "database", "postgres", "postgresql", "sql", "actix", "actix-web", "http", "web", "app", "webapp", "async"]
 categories = ["api-bindings", "network-programming", "asynchronous", "web-programming::http-server", "database", "database-implementations", "concurrency"]
 
