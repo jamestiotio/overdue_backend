@@ -30,10 +30,10 @@ actix-rt = "1.1.1"
 actix-cors = "0.5.4"
 actix-ratelimit = "0.3.1"
 actix-files = "0.5.0"
-validator = { version = "0.13", features = ["derive"] }
+validator = { version = "0.14", features = ["derive"] }
 futures = "0.3"
-env_logger = "0.8"
-serde = { version = "1.0.104", features = ["derive"] }
+env_logger = "0.9"
+serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 json = "0.12"
 tokio-pg-mapper = "0.1.4"
@@ -45,7 +45,7 @@ openssl = { version = "0.10.33", features = ["vendored"] }
 native-tls = "0.2.7"
 postgres-native-tls = "0.5.0"
 dotenv = "0.15.0"
-config = "0.11.0"
+config = "0.12.0"
 thiserror = "1.0.24"
 regex = "1.4.3"
 lazy_static = "1.4.0"
@@ -54,16 +54,17 @@ slog = "2.7.0"
 slog-term = "2.8.0"
 slog-async = "2.6.0"
 chrono = "0.4.19"
-actix-web-static-files = "3.0"
+actix-web-static-files = "4.0"
+actix-web-middleware-redirect-scheme = "3.0"
 
 [build-dependencies]
-actix-web-static-files = "3.0"
+actix-web-static-files = "4.0"
 
 [dev-dependencies]
-cargo-watch = "7.5.0"
+cargo-watch = "8.1.1"
 cargo-deb = "1.29.1"
-cargo-tarpaulin = "0.16.0"
-cargo-audit = "0.14.0"
+cargo-tarpaulin = "0.19.1"
+cargo-audit = "0.16.0"
 dotenv-linter = "3.0.0"
 tokio-test = "0.4.0"
 
