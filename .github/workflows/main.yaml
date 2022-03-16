@@ -85,9 +85,11 @@ jobs:
             sudo systemctl start overdue_backend.service;
             exit;
           '
+      - name: Print Success Message
+        if: success()
+        run: echo '\u001b[32mContinuous deployment to DigitalOcean server is successful!\u001b[0m'
       - name: Delete & Cleanup SSH Credentials
         if: always()
         run: |
           sudo rm -rf ~/.ssh/overdue_rsa
           sudo rm -rf ~/.ssh/known_hosts
-          echo 'Continuous deployment to DigitalOcean server is successful!'
