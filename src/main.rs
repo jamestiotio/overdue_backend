@@ -2,7 +2,7 @@
 use actix_cors::Cors;
 use actix_ratelimit::{MemoryStore, MemoryStoreActor, RateLimiter};
 use actix_web::{guard, http, middleware, web, App, FromRequest, HttpServer};
-use actix_web_middleware_redirect_scheme::RedirectSchemeBuilder;
+use actix_web_middleware_redirect_https::RedirectHTTPS;
 use dotenv::dotenv;
 use openssl::ssl::{SslAcceptor, SslAcceptorBuilder, SslFiletype, SslMethod};
 use slog::{slog_info, Level};
@@ -102,7 +102,7 @@ async fn main() -> std::io::Result<()> {
             // .wrap(middleware::Logger::default())
             .wrap(cors)
             // Redirect HTTP to HTTPS
-            .wrap(RedirectSchemeBuilder::new().build())
+            .wrap(RedirectHTTPS::default())
             // Register the middleware which allows for a maximum of 60 requests per minute per client based on IP address.
             .wrap(
                 RateLimiter::new(

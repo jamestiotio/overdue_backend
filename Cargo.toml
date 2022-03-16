@@ -55,7 +55,7 @@ slog-term = "2.8.0"
 slog-async = "2.6.0"
 chrono = "0.4.19"
 actix-web-static-files = "4.0"
-actix-web-middleware-redirect-scheme = "3.0"
+actix-web-middleware-redirect-https = "3.0.1"
 
 [build-dependencies]
 actix-web-static-files = "4.0"

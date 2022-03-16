@@ -539,10 +539,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "actix-web-middleware-redirect-scheme"
-version = "3.0.0"
+name = "actix-web-middleware-redirect-https"
+version = "3.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "711ca00d71f91aadf3b2b89e3c28e9d9a48b5f28f861a2bd195cd689f1f553bd"
+checksum = "3ce1464786203c29120f6d1e4dcdc9c3975506e70b89c3a56c5389f265256dc6"
 dependencies = [
  "actix-service 1.0.6",
  "actix-web 3.3.3",
@@ -3367,7 +3367,7 @@ dependencies = [
  "actix-ratelimit",
  "actix-rt 1.1.1",
  "actix-web 3.3.3",
- "actix-web-middleware-redirect-scheme",
+ "actix-web-middleware-redirect-https",
  "actix-web-static-files",
  "cargo-audit",
  "cargo-deb",
