@@ -6,6 +6,7 @@ on:
 jobs:
   monthly_update_cert:
     runs-on: ubuntu-latest
+    if: ${{ false }}  # Disable for now
     steps:
       - name: Setup & Configure SSH
         run: |
